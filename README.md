@@ -1,5 +1,7 @@
 # sistema-hemo-bak-end
 
-# Para instalção dos pacotes utilizar o comando:
+## Para instalção dos pacotes utilizar o comando:
 
+```bash
 composer install
+```
