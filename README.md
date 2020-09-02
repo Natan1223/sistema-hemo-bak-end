@@ -2,7 +2,7 @@
 
 ## Instalção de pacotes:
 
-Use os gerenciador de pacotes COMPOSER para instalação
+Use o gerenciador de pacotes COMPOSER para instalação.
 
 ```bash
 composer install
