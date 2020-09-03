@@ -8,3 +8,5 @@ Use o gerenciador de pacotes COMPOSER para instalação.
 composer install
 ```
 ## Confirguração
+
+Para configuração da classe PDO
