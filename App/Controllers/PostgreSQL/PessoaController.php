@@ -16,7 +16,9 @@ class PessoaController
 
         $pessoaDAO = new PessoaDAO();
         $pessoa = new PessoaModel();
-        $pessoa->setIdPessoa ($data['idPessoa'])
+
+        $pessoa
+            ->setIdPessoa ($data['idPessoa'])
             ->setNaturalidade ($data['naturalidade'])
             ->setNome ($data['nome'])
             ->setDataNascimento ($data['dataNascimento'])
@@ -53,7 +55,9 @@ class PessoaController
 
         $pessoaDAO = new PessoaDAO();
         $pessoa = new PessoaModel();
-        $pessoa->setIdPessoa ($data['idPessoa'])
+        
+        $pessoa
+            ->setIdPessoa ($data['idPessoa'])
             ->setNaturalidade ($data['naturalidade'])
             ->setNome ($data['nome'])
             ->setDataNascimento ($data['dataNascimento'])

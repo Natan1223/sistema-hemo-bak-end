@@ -60,18 +60,18 @@ final class PessoaDAO extends Conexao
     public function atualizarDadosPessoa(PessoaModel $pessoa): void
     {
         $statement = $this->pdo
-            ->prepare('UPDATE pessoa SET
-                        naturalidade = :naturalidade,
-                        nome = :nome, 
-                        datanascimento = :datanascimento, 
-                        sexo = :sexo, 
-                        cpf = :cpf, 
-                        nomemae = :nomemae, 
-                        email = :email, 
-                        telefone1 = :telefone1, 
-                        telefone2 = :telefone2
-                    WHERE
-                        idpessoa = :idpessoa
+            ->prepare(' UPDATE pessoa SET
+                            naturalidade = :naturalidade,
+                            nome = :nome, 
+                            datanascimento = :datanascimento, 
+                            sexo = :sexo, 
+                            cpf = :cpf, 
+                            nomemae = :nomemae, 
+                            email = :email, 
+                            telefone1 = :telefone1, 
+                            telefone2 = :telefone2
+                        WHERE
+                            idpessoa = :idpessoa
         ;');
 
         $statement->execute([
