@@ -44,9 +44,7 @@ class UsuarioController
                 "message" => "Parametros não aceitaveis..."
             ]);
         }
-        
-
-
+    
         return $response;
     }
 

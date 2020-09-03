@@ -17,7 +17,7 @@ final class PessoaDAO extends Conexao
         $statement = $this->pdo
             ->prepare(" SELECT 
                             * 
-                        FROM pessoa
+                        FROM administracao.pessoa
                         ");
         $statement->execute();
         $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -28,8 +28,18 @@ final class PessoaDAO extends Conexao
     public function cadastrarPessoa(PessoaModel $pessoa): array
     {
         $statement = $this->pdo
-            ->prepare('INSERT INTO pessoa VALUES(
-                :idpessoa,
+            ->prepare('INSERT INTO administracao.pessoa (
+                naturalidade,
+                nome, 
+                datanascimento, 
+                sexo, 
+                cpf, 
+                nomemae, 
+                email, 
+                telefone1, 
+                telefone2
+            )
+            VALUES(
                 :naturalidade,
                 :nome, 
                 :datanascimento, 
@@ -40,8 +50,8 @@ final class PessoaDAO extends Conexao
                 :telefone1, 
                 :telefone2
             );');
+
         $statement->execute([
-            'idpessoa' => $pessoa->getIdPessoa(),
             'naturalidade' => $pessoa->getNaturalidade(),
             'nome' => $pessoa->getNome(),
             'datanascimento' => $pessoa->getDataNascimento(),
@@ -60,7 +70,7 @@ final class PessoaDAO extends Conexao
     public function atualizarDadosPessoa(PessoaModel $pessoa): void
     {
         $statement = $this->pdo
-            ->prepare(' UPDATE pessoa SET
+            ->prepare(' UPDATE administracao.pessoa SET
                             naturalidade = :naturalidade,
                             nome = :nome, 
                             datanascimento = :datanascimento, 
@@ -71,7 +81,7 @@ final class PessoaDAO extends Conexao
                             telefone1 = :telefone1, 
                             telefone2 = :telefone2
                         WHERE
-                            idpessoa = :idpessoa
+                            cpf = :cpf
         ;');
 
         $statement->execute([
@@ -83,8 +93,7 @@ final class PessoaDAO extends Conexao
             'nomemae' => $pessoa->getNomeMae(),
             'email' => $pessoa->getEmail(),
             'telefone1' => $pessoa->getTelefone1(),
-            'telefone2' => $pessoa->getTelefone2(),
-            'idpessoa' => $pessoa->getIdPessoa()
+            'telefone2' => $pessoa->getTelefone2()
         ]);
         return;
     }
