@@ -39,6 +39,7 @@ $app->group('',function() use ($app){
     $app->put('/pessoa', PessoaController::class . ':atualizarDadosPessoa');
 
     $app->get('/usuarios', UsuarioController::class . ':mostraUsuarios');
+    $app->post('/usuario', UsuarioController::class . ':cadastrarUsuario');
 
     $app->get('/nome-rota-exemplo/[{id}]', NomeExemploClassController::class . ':nomeMetodoDaClass');
     $app->post('/nome-rota-exemplo', NomeExemploClassController::class . ':nomeMetodoDaClass');

@@ -12,10 +12,33 @@ final class UsuarioDAO extends Conexao
         parent::__construct(); 
     }
 
-    public function cadastrarUsuario(UsuarioModel $usuario): array
+    public function cadastrarUsuario(UsuarioModel $usuario)
     {
+            $statement = $this->pdo
+                ->prepare(' INSERT INTO 
+                            administracao.usuario (
+                                idpessoa, 
+                                login, 
+                                senha, 
+                                ativo
+                            ) VALUES (
+                                :idpessoa,
+                                :login,
+                                :senha,
+                                :ativo   
+                            );
+                ');
+            $statement->execute([
+                'idpessoa'=>$usuario->getIdPessoa(),
+                'login'=>$usuario->getLogin(),
+                'senha'=>$usuario->getSenha(),
+                'ativo' =>$usuario->getAtivo()
+            ]);
 
-        return $response;
+            $idUsuario =  $this->pdo->lastInsertId();
+            
+            return $idUsuario;
+ 
     }
 
     public function listarUsuarios(UsuarioModel $usuario): array
@@ -54,9 +77,10 @@ final class UsuarioDAO extends Conexao
             return null;
         
         $usuario = new UsuarioModel();
-        $usuario->setIdUsuario($usuarios[0]['idusuario'])
-                ->setLogin($usuarios[0]['login'])
-                ->setSenha($usuarios[0]['senha']);
+        $usuario
+            ->setIdUsuario($usuarios[0]['idusuario'])
+            ->setLogin($usuarios[0]['login'])
+            ->setSenha($usuarios[0]['senha']);
 
         return $usuario;
     }

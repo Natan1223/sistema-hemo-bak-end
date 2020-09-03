@@ -17,9 +17,7 @@ final class AutenticaController
         $data = $request->getParsedBody();
 
         $login = $data['login'];
-        $senha = $data['senha'];
-
-        // $senha = md5($data['senha']);
+        $senha = md5($data['senha']);
 
         $usuarioDAO = new UsuarioDAO();
         $usuario = $usuarioDAO->usuarioLogin($login);

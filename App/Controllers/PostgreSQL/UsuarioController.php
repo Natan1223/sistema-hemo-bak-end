@@ -12,6 +12,40 @@ class UsuarioController
 
     public function cadastrarUsuario(Request $request, Response $response, array $args): Response
     {
+        $data = $request->getParsedBody();
+
+        $usuarioDAO = new UsuarioDAO();
+        $usuario = new UsuarioModel();
+
+        if($data){
+            $usuario
+            ->setIdPessoa((int)$data['idPessoa'])
+            ->setLogin((string)$data['login'])
+            ->setSenha(md5($data['senha']))
+            ->setAtivo((string)$data['ativo']);
+
+            $idUsuario = $usuarioDAO->cadastrarUsuario($usuario); 
+            
+            if($idUsuario){
+                $response = $response->withjson([
+                    "message" => "Usuario cadastrado com sucesso..."
+                ]);
+            }else {
+                $response = $response
+                ->withStatus(406)
+                ->withjson([
+                    "message" => "Erro ao cadastrar usuário..."
+                ]);
+            }
+        }else{
+            $response = $response
+            ->withStatus(406)
+            ->withjson([
+                "message" => "Parametros não aceitaveis..."
+            ]);
+        }
+        
+
 
         return $response;
     }
