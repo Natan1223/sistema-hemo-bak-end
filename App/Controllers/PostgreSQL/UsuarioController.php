@@ -18,6 +18,14 @@ class UsuarioController
 
     public function listarUsuarios(Request $request, Response $response, array $args): Response
     {
+        $usuario = new UsuarioDAO();
+
+        $result = $usuario->mostraUsuarios();
+
+        $response = $response
+            ->withjson($result);
+
+        return $response;
  
         return $response;
     }
