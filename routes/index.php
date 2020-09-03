@@ -3,6 +3,7 @@
 use function src\slimConfiguration;
 
 use App\Controllers\PostgreSQL\NomeExemploClassController;
+use App\Controllers\PostgreSQL\PessoaController;
 
 $app = new \Slim\App(slimConfiguration());
 
@@ -26,7 +27,13 @@ $app->get('/apresentacao-hemo', function ($request, $response, $args) {
 
 $app->group('',function() use ($app){
 
-    $app->get('/nome-rota-exemplo', NomeExemploClassController::class . ':nomeMetodoDaClass');
+    #lista todas as pessoas cadastradas
+    $app->get('/pessoa', PessoaController::class . ':listarPessoas');
+    #cadastra uma pessoa
+    $app->post('/pessoa', PessoaController::class . ':cadastrarPessoa');
+    #atualizar dados de uma pessoa
+    $app->put('/pessoa', PessoaController::class . ':atualizarDadosPessoa');
+
     $app->get('/nome-rota-exemplo/[{id}]', NomeExemploClassController::class . ':nomeMetodoDaClass');
     $app->post('/nome-rota-exemplo', NomeExemploClassController::class . ':nomeMetodoDaClass');
     $app->put('/nome-rota-exemplo', NomeExemploClassController::class . ':nomeMetodoDaClass');
