@@ -41,9 +41,18 @@ final class UsuarioDAO extends Conexao
  
     }
 
-    public function listarUsuarios(UsuarioModel $usuario): array
+    public function listarUsuarios(): array
     {
- 
+        $statement = $this->pdo
+            ->prepare(' SELECT 
+                            idusuario,
+                            login,
+                            ativo
+                        FROM administracao.usuario
+                        ORDER BY idusuario,ativo
+            ');
+        $statement->execute();
+        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
         return $response;
     }
 

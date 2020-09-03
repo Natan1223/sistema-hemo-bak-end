@@ -54,13 +54,11 @@ class UsuarioController
     {
         $usuario = new UsuarioDAO();
 
-        $result = $usuario->mostraUsuarios();
+        $result = $usuario->listarUsuarios();
 
         $response = $response
             ->withjson($result);
 
-        return $response;
- 
         return $response;
     }
 
