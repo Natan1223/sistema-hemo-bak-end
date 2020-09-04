@@ -58,7 +58,7 @@ final class UsuarioDAO extends Conexao
 
     public function atualizarDadosUsuario(UsuarioModel $usuario): array
     {
-
+        
         return $response;
     }
 

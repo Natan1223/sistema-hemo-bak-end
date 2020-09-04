@@ -17,8 +17,8 @@ class PessoaController
         $pessoaDAO = new PessoaDAO();
         $pessoa = new PessoaModel();
 
-        $pessoa
-            ->setIdPessoa ($data['idPessoa'])
+        if($data){
+            $pessoa
             ->setNaturalidade ($data['naturalidade'])
             ->setNome ($data['nome'])
             ->setDataNascimento ($data['dataNascimento'])
@@ -28,13 +28,28 @@ class PessoaController
             ->setEmail ($data['email'])
             ->setTelefone1 ($data['telefone1'])
             ->setTelefone2 ($data['telefone2']);
-        
-        $pessoaDAO->cadastrarPessoa($pessoa);
 
-        $response = $response->withJson([
-            'message' => 'Pessoa inserida com sucesso!'
-        ]);
-
+            $idPessoa = $pessoaDAO->cadastrarPessoa($pessoa); 
+            
+            if($idPessoa){
+                $response = $response->withjson([
+                    "message" => "Pessoa cadastrado com sucesso..."
+                ]);
+            }else {
+                $response = $response
+                ->withStatus(406)
+                ->withjson([
+                    "message" => "Erro ao cadastrar pessoa..."
+                ]);
+            }
+        }else{
+            $response = $response
+            ->withStatus(406)
+            ->withjson([
+                "message" => "Parametros não aceitaveis..."
+            ]);
+        }
+    
         return $response;
     }
 
@@ -55,9 +70,8 @@ class PessoaController
 
         $pessoaDAO = new PessoaDAO();
         $pessoa = new PessoaModel();
-        
-        $pessoa
-            ->setIdPessoa ($data['idPessoa'])
+        if($data){
+            $pessoa
             ->setNaturalidade ($data['naturalidade'])
             ->setNome ($data['nome'])
             ->setDataNascimento ($data['dataNascimento'])
@@ -70,9 +84,26 @@ class PessoaController
             
         $pessoaDAO->atualizarDadosPessoa($pessoa);
 
-        $response = $response->withJson([
-            'message' => 'Pessoa atualizada com sucesso!'
+        if($pessoaDAO){
+            $response = $response->withjson([
+                "message" => "Pessoa atualizada com sucesso..."
+            ]);
+        }else {
+            $response = $response
+            ->withStatus(406)
+            ->withjson([
+                "message" => "Erro ao atualizar pessoa..."
+            ]);
+        }
+    }else{
+        $response = $response
+        ->withStatus(406)
+        ->withjson([
+            "message" => "Parametros não aceitaveis..."
         ]);
+    }
+
+    return $response;
 
         return $response;
     }

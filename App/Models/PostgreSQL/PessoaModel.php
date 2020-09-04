@@ -4,57 +4,22 @@ namespace App\Models\PostgreSQL;
 
 class PessoaModel
 {
-	/**
-     * @var int
-     */
 	private $idPessoa;
-	/**
-     * @var int
-     */
 	private $naturalidade;
-	/**
-     * @var string
-     */
 	private $nome;
-	/**
-     * @var string
-     */
 	private $dataNascimento;
-	/**
-     * @var string
-     */
 	private $sexo;
-	/**
-     * @var string
-     */
 	private $cpf;
-	/**
-     * @var string
-     */
 	private $nomeMae;
-	/**
-     * @var string
-     */
 	private $email;
-	/**
-     * @var string
-     */
 	private $telefone1;
-	/**
-     * @var string
-     */
 	private $telefone2;
-
-	/**
-     * @return int
-    */
 
     public function getIdPessoa(): int {
 		return $this->idPessoa;
 	}
 
 	/**
-     * @param int $idPessoa
      * @return self
      */
 
@@ -63,16 +28,11 @@ class PessoaModel
         return $this;
 	}
 
-	/**
-     * @return int
-    */
-
 	public function getNaturalidade(): int {
 		return $this->naturalidade;
 	}
 
 	/**
-     * @param int $naturalidade
      * @return self
      */
 
@@ -81,16 +41,11 @@ class PessoaModel
         return $this;
 	}
 
-	/**
-     * @return string
-    */
-
 	public function getNome(): string {
 		return $this->nome;
 	}
 
 	/**
-     * @param int $nome
      * @return self
      */
 
@@ -99,16 +54,11 @@ class PessoaModel
         return $this;
 	}
 
-	/**
-     * @return string
-	*/
-	
 	public function getDataNascimento(): string {
 		return $this->dataNascimento;
 	}
 
 	/**
-     * @param int $dataNascimento
      * @return self
      */
 
@@ -116,17 +66,12 @@ class PessoaModel
 		$this->dataNascimento = $dataNascimento;
         return $this;
 	}
-
-	/**
-     * @return string
-	*/
 	
 	public function getSexo(): string {
 		return $this->sexo;
 	}
 
 	/**
-     * @param int $sexo
      * @return self
      */
 
@@ -135,16 +80,11 @@ class PessoaModel
         return $this;
 	}
 
-	/**
-     * @return string
-    */
-
 	public function getCpf(): string {
 		return $this->cpf;
 	}
 
 	/**
-     * @param int $cpf
      * @return self
      */
 
@@ -153,16 +93,11 @@ class PessoaModel
         return $this;
 	}
 
-	/**
-     * @return string
-    */
-
 	public function getNomeMae(): string {
 		return $this->nomeMae;
 	}
 
 	/**
-     * @param int $nomeMae
      * @return self
      */
 
@@ -171,16 +106,11 @@ class PessoaModel
         return $this;
 	}
 
-	/**
-     * @return string
-    */
-
 	public function getEmail(): string {
 		return $this->email;
 	}
 
 	/**
-     * @param int $email
      * @return self
      */
 
@@ -189,16 +119,11 @@ class PessoaModel
         return $this;
 	}
 
-	/**
-     * @return string
-    */
-
 	public function getTelefone1(): string {
 		return $this->telefone1;
 	}
 
 	/**
-     * @param int $telefone1
      * @return self
      */
 
@@ -207,16 +132,11 @@ class PessoaModel
         return $this;
 	}
 
-	/**
-     * @return string
-    */
-
 	public function getTelefone2(): string {
 		return $this->telefone2;
 	}
 
 	/**
-     * @param int $telefone2
      * @return self
      */
 
