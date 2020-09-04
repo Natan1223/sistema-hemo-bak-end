@@ -14,30 +14,30 @@ final class UsuarioDAO extends Conexao
 
     public function cadastrarUsuario(UsuarioModel $usuario)
     {
-            $statement = $this->pdo
-                ->prepare(' INSERT INTO 
-                            administracao.usuario (
-                                idpessoa, 
-                                login, 
-                                senha, 
-                                ativo
-                            ) VALUES (
-                                :idpessoa,
-                                :login,
-                                :senha,
-                                :ativo   
-                            );
-                ');
-            $statement->execute([
-                'idpessoa'=>$usuario->getIdPessoa(),
-                'login'=>$usuario->getLogin(),
-                'senha'=>$usuario->getSenha(),
-                'ativo' =>$usuario->getAtivo()
-            ]);
+        $statement = $this->pdo
+            ->prepare(' INSERT INTO 
+                        administracao.usuario (
+                            idpessoa, 
+                            login, 
+                            senha, 
+                            ativo
+                        ) VALUES (
+                            :idpessoa,
+                            :login,
+                            :senha,
+                            :ativo   
+                        );
+            ');
+        $statement->execute([
+            'idpessoa'=>$usuario->getIdPessoa(),
+            'login'=>$usuario->getLogin(),
+            'senha'=>$usuario->getSenha(),
+            'ativo' =>$usuario->getAtivo()
+        ]);
 
-            $idUsuario =  $this->pdo->lastInsertId();
-            
-            return $idUsuario;
+        $idUsuario =  $this->pdo->lastInsertId();
+        
+        return $idUsuario;
  
     }
 
