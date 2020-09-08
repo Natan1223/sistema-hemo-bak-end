@@ -5,6 +5,7 @@ use function src\slimConfiguration;
 use App\Controllers\PostgreSQL\PessoaController;
 use App\Controllers\PostgreSQL\AutenticaController;
 use App\Controllers\PostgreSQL\UsuarioController;
+use App\Controllers\PostgreSQL\CidadeController;
 use Tuupola\Middleware\JwtAuthentication;
 
 $app = new \Slim\App(slimConfiguration());
@@ -40,6 +41,10 @@ $app->group('',function() use ($app){
 
     $app->get('/usuarios', UsuarioController::class . ':listarUsuarios');
     $app->post('/usuario', UsuarioController::class . ':cadastrarUsuario');
+
+    $app->get('/cidades', CidadeController::class . ':listarCidades');
+    $app->post('/cidade', CidadeController::class . ':cadastrarCidade');
+    $app->put('/cidade', CidadeController::class . 'atualizarDadosCidade');
 
     $app->get('/nome-rota-exemplo/[{id}]', NomeExemploClassController::class . ':nomeMetodoDaClass');
     $app->post('/nome-rota-exemplo', NomeExemploClassController::class . ':nomeMetodoDaClass');
