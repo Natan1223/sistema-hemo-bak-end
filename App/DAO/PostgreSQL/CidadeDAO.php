@@ -25,8 +25,7 @@ final class CidadeDAO extends Conexao
                             );
                 ');
             $statement->execute([
-                'idcidade'=>$cidade->getIdCidade(),
-                'descricao'=>$cidade->getDescricao
+                'descricao'=>$cidade->getDescricao()
             ]);
 
             $idCidade =  $this->pdo->lastInsertId();

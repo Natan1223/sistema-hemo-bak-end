@@ -19,7 +19,6 @@ class CidadeController
 
         if($data){
             $cidade
-            ->setIdCidade((int)$data['idCidade'])
             ->setDescricao((string)$data['descricao']);
 
             $idCidade = $cidadeDAO->cadastrarCidade($cidade); 
