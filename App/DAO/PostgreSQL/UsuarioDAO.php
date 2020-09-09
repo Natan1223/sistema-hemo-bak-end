@@ -14,30 +14,30 @@ final class UsuarioDAO extends Conexao
 
     public function cadastrarUsuario(UsuarioModel $usuario)
     {
-            $statement = $this->pdo
-                ->prepare(' INSERT INTO 
-                            administracao.usuario (
-                                idpessoa, 
-                                login, 
-                                senha, 
-                                ativo
-                            ) VALUES (
-                                :idpessoa,
-                                :login,
-                                :senha,
-                                :ativo   
-                            );
-                ');
-            $statement->execute([
-                'idpessoa'=>$usuario->getIdPessoa(),
-                'login'=>$usuario->getLogin(),
-                'senha'=>$usuario->getSenha(),
-                'ativo' =>$usuario->getAtivo()
-            ]);
+        $statement = $this->pdo
+            ->prepare(' INSERT INTO 
+                        administracao.usuario (
+                            idpessoa, 
+                            login, 
+                            senha, 
+                            ativo
+                        ) VALUES (
+                            :idpessoa,
+                            :login,
+                            :senha,
+                            :ativo   
+                        );
+            ');
+        $statement->execute([
+            'idpessoa'=>$usuario->getIdPessoa(),
+            'login'=>$usuario->getLogin(),
+            'senha'=>$usuario->getSenha(),
+            'ativo' =>$usuario->getAtivo()
+        ]);
 
-            $idUsuario =  $this->pdo->lastInsertId();
-            
-            return $idUsuario;
+        $idUsuario =  $this->pdo->lastInsertId();
+        
+        return $idUsuario;
  
     }
 
@@ -62,10 +62,35 @@ final class UsuarioDAO extends Conexao
         return $response;
     }
 
+    public function consultaUsuarioRest(string $email): array
+    {
+        $statement = $this->pdo
+            ->prepare(' SELECT
+                            u.idusuario,
+                            p.nome,
+                            u.login
+                        FROM administracao.usuario u
+                        join administracao.pessoa p
+                            on u.idpessoa = p.idpessoa
+                        WHERE login = :email
+            ');
+        $statement->bindParam('email', $email);
+        $statement->execute();
+        $usuario = $statement->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $usuario;
+    }
+
     public function atualizarSenha(UsuarioModel $usuario): array
     {
+        $statement = $this->pdo
+            ->prepare(' 
+                
+            ');
+        $statement->execute();
+        $usuario = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        return $response;
+        return $usuario;
     }
 
     public function usuarioLogin(string $usuario): ?UsuarioModel
