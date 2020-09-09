@@ -17,16 +17,13 @@ final class CidadeDAO extends Conexao
             $statement = $this->pdo
                 ->prepare(' INSERT INTO 
                             administracao.cidade (
-                                idcidade, 
                                 descricao
                             ) VALUES (
-                                :idcidade,
                                 :descricao  
                             );
                 ');
             $statement->execute([
-                'idcidade'=>$cidade->getIdCidade(),
-                'descricao'=>$cidade->getDescricao
+                'descricao'=>$cidade->getDescricao()
             ]);
 
             $idCidade =  $this->pdo->lastInsertId();
@@ -53,7 +50,8 @@ final class CidadeDAO extends Conexao
     {
         $statement = $this->pdo
             ->prepare(' UPDATE administracao.cidade SET
-                            descricao = :descricao,
+                            idcidade = :idcidade,
+                            descricao = :descricao
                         WHERE
                             idcidade = :idcidade
         ;');

@@ -44,7 +44,7 @@ $app->group('',function() use ($app){
 
     $app->get('/cidades', CidadeController::class . ':listarCidades');
     $app->post('/cidade', CidadeController::class . ':cadastrarCidade');
-    $app->put('/cidade', CidadeController::class . 'atualizarDadosCidade');
+    $app->put('/cidade', CidadeController::class . ':atualizarDadosCidade');
 
     $app->get('/nome-rota-exemplo/[{id}]', NomeExemploClassController::class . ':nomeMetodoDaClass');
     $app->post('/nome-rota-exemplo', NomeExemploClassController::class . ':nomeMetodoDaClass');

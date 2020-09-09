@@ -28,7 +28,7 @@ final class CidadeModel
      * @return self
      */
 
-	public function setDescricao(int $descricao): self{
+	public function setDescricao(string $descricao): self{
 		$this->descricao = $descricao;
         return $this;
 	}

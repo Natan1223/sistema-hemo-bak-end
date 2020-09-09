@@ -19,8 +19,7 @@ class CidadeController
 
         if($data){
             $cidade
-            ->setIdCidade((int)$data['idCidade'])
-            ->setDescricao((string)$data['descricao'])
+            ->setDescricao((string)$data['descricao']);
 
             $idCidade = $cidadeDAO->cadastrarCidade($cidade); 
             
@@ -66,7 +65,8 @@ class CidadeController
         $cidade = new CidadeModel();
         if($data){
             $cidade
-            ->setDescricao ($data['descricao'])
+            ->setIdCidade ($data['idPessoa'])
+            ->setDescricao ($data['descricao']);
             
         $cidadeDAO->atualizarDadosCidade($cidade);
 
