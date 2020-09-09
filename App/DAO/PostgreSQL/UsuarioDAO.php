@@ -84,10 +84,15 @@ final class UsuarioDAO extends Conexao
     public function atualizarSenha(UsuarioModel $usuario): array
     {
         $statement = $this->pdo
-            ->prepare(' 
+            ->prepare(' UPDATE administracao.usuario SET
+                            senha = :senha
+                        WHERE login = :login
                 
             ');
-        $statement->execute();
+        $statement->execute([
+            'login'=>$usuario->getLogin(),
+            'senha'=>$usuario->getSenha()
+        ]);
         $usuario = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         return $usuario;

@@ -21,6 +21,10 @@ $app->add(function ($req, $res, $next) {
 
 $app->post('/login', AutenticaController::class . ':login');
 
+$app->get('/usuario-senha/[{id}]', UsuarioController::class . ':consultaUsuarioRest');
+$app->put('/usuario-senha', UsuarioController::class . ':atualizarSenha');
+$app->get('/usuario-email/[{id}]', UsuarioController::class . ':consultaUsuarioRest');
+
 $app->get('/apresentacao-hemo', function ($request, $response, $args) {
     return $response
         ->withStatus(200)
@@ -41,7 +45,6 @@ $app->group('',function() use ($app){
 
     $app->get('/usuarios', UsuarioController::class . ':listarUsuarios');
     $app->post('/usuario', UsuarioController::class . ':cadastrarUsuario');
-    $app->get('/usuario-senha/[{id}]', UsuarioController::class . ':atualizarSenha');
 
     $app->get('/cidades', CidadeController::class . ':listarCidades');
     $app->post('/cidade', CidadeController::class . ':cadastrarCidade');
