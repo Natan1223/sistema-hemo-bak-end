@@ -41,6 +41,7 @@ $app->group('',function() use ($app){
 
     $app->get('/usuarios', UsuarioController::class . ':listarUsuarios');
     $app->post('/usuario', UsuarioController::class . ':cadastrarUsuario');
+    $app->get('/usuario-senha/[{id}]', UsuarioController::class . ':atualizarSenha');
 
     $app->get('/cidades', CidadeController::class . ':listarCidades');
     $app->post('/cidade', CidadeController::class . ':cadastrarCidade');

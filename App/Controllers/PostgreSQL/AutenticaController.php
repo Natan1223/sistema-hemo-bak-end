@@ -24,13 +24,13 @@ final class AutenticaController
 
         if(is_null($usuario))
             return $response->withJson([
-                                "menssagem" => 'Usuario Invalido.'
+                                "menssage" => 'Usuario Invalido.'
                             ])
                             ->withStatus(401);
 
         if($senha <> $usuario->getSenha())
             return $response->withJson([
-                                "menssagem" => 'Senha Invalida.'
+                                "menssage" => 'Senha Invalida.'
                             ])
                             ->withStatus(401);
 
