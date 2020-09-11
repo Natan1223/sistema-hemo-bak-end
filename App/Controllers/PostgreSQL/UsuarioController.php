@@ -62,16 +62,14 @@ class UsuarioController
     {
         $usuario = new UsuarioDAO();
 
-        $resultado = $usuario->listarUsuarios();
-
-        $message = [
-            'pt' => null,
-            'en' => null
-        ];
+        $data = $usuario->listarUsuarios();
 
         $result = [
-            'message' => $message,
-            'result' => $resultado
+            'message' => [
+                'pt' => null,
+                'en' => null
+            ],
+            'result' => $data
         ];
 
         $response = $response
@@ -94,10 +92,17 @@ class UsuarioController
         $usuario = new UsuarioModel();
 
         if(strlen($data['senha']) < 8)
+            
+            $result = [
+                'message' => [
+                    'pt' => 'Senha com menos de 8 caracteres',
+                    'en' => 'Password less than 8 characters'
+                ],
+                'result' => null
+            ];
+
             return $response
-                ->withJson([
-                    "menssage" => 'Senha abaixo de 8 caracteres!'
-                ])
+                ->withJson($result)
                 ->withStatus(401);
 
         $token = $data['token'];
@@ -113,14 +118,27 @@ class UsuarioController
                 ->setSenha(md5($data['senha']));
 
             $usuarioDAO->atualizarSenha($usuario);
-            $response = $response->withjson([
-                "message" => "Senha alterada com sucesso..."
-            ]);
+           
+            $result = [
+                'message' => [
+                    'pt' => 'Senha alterada com sucesso.',
+                    'en' => 'Password changed successfully.'
+                ],
+                'result' => null
+            ];            
+
+            $response = $response->withjson($result);
 
         }else {
-            $response = $response->withjson([
-                "message" => "Token invalido."
-            ]);
+
+            $result = [
+                'message' => [
+                    'pt' => 'Token inválido',
+                    'en' => 'Invalid token.'
+                ],
+                'result' => null
+            ]; 
+            $response = $response->withjson($result);
         }
 
         return $response;

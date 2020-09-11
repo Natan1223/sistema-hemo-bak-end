@@ -32,6 +32,8 @@ $app->get('/apresentacao-hemo', function ($request, $response, $args) {
         ]);
 });
 
+$app->get('/usuarios', UsuarioController::class . ':listarUsuarios');
+
 $app->group('',function() use ($app){
 
     #lista todas as pessoas cadastradas
@@ -41,7 +43,7 @@ $app->group('',function() use ($app){
     #atualizar dados de uma pessoa
     $app->put('/pessoa', PessoaController::class . ':atualizarDadosPessoa');
 
-    $app->get('/usuarios', UsuarioController::class . ':listarUsuarios');
+   
     $app->post('/usuario', UsuarioController::class . ':cadastrarUsuario');
 
     $app->put('/usuario-senha', UsuarioController::class . ':atualizarSenha');
