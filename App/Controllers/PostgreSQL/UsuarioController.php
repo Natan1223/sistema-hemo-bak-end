@@ -62,7 +62,17 @@ class UsuarioController
     {
         $usuario = new UsuarioDAO();
 
-        $result = $usuario->listarUsuarios();
+        $resultado = $usuario->listarUsuarios();
+
+        $message = [
+            'pt' => null,
+            'en' => null
+        ];
+
+        $result = [
+            'message' => $message,
+            'result' => $resultado
+        ];
 
         $response = $response
             ->withjson($result);
