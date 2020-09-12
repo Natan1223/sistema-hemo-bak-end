@@ -5,10 +5,10 @@ namespace App\Models\PostgreSQL;
 final class TokenModel
 { 
     private $idToken;
-    private $idUsuario;
+    private $idPerson;
     private $token;
     private $refreshToken;
-    private $dataExpira;
+    private $dateExpire;
 
 
     /**
@@ -32,21 +32,21 @@ final class TokenModel
     }
 
     /**
-     * Get the value of idUsuario
+     * Get the value of idPerson
      */ 
-    public function getIdUsuario(): int
+    public function getIdPerson(): int
     {
-        return $this->idUsuario;
+        return $this->idPerson;
     }
 
     /**
-     * Set the value of idUsuario
+     * Set the value of idPerson
      *
      * @return  self
      */ 
-    public function setIdUsuario($idUsuario): TokenModel
+    public function setIdPerson($idPerson): TokenModel
     {
-        $this->idUsuario = $idUsuario;
+        $this->idPerson = $idPerson;
 
         return $this;
     }
@@ -89,24 +89,24 @@ final class TokenModel
         $this->refreshToken = $refreshToken;
 
         return $this;
-    }
+    } 
 
     /**
-     * Get the value of dataExpira
+     * Get the value of dateExpire
      */ 
-    public function getDataExpira(): string
+    public function getDateExpire(): string
     {
-        return $this->dataExpira;
+        return $this->dateExpire;
     }
 
     /**
-     * Set the value of dataExpira
+     * Set the value of dateExpire
      *
      * @return  self
      */ 
-    public function setDataExpira($dataExpira): TokenModel
+    public function setDateExpire($dateExpire): TokenModel
     {
-        $this->dataExpira = $dataExpira;
+        $this->dateExpire = $dateExpire;
 
         return $this;
     }

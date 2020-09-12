@@ -64,11 +64,11 @@ final class AuthenticateController
         $tokenModel
             ->setToken($token)
             ->setRefreshToken($refreshToken)
-            ->setDataExpira($dateExpire)
-            ->setIdUsuario($user->getIdPerson());
+            ->setDateExpire($dateExpire)
+            ->setIdPerson($user->getIdPerson());
 
         $tokenDAO = new TokenDAO();
-        $tokenDAO->criaToken($tokenModel);
+        $tokenDAO->createToken($tokenModel);
 
         $tokenResult = [
             "token" => $token,

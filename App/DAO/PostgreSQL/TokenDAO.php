@@ -12,7 +12,7 @@ final class TokenDAO extends Connection
         parent::__construct(); 
     }
 
-    public function criaToken(TokenModel $token): void
+    public function createToken(TokenModel $token): void
     {
         $statement = $this->pdo
             ->prepare('INSERT INTO administracao.token
@@ -32,9 +32,9 @@ final class TokenDAO extends Connection
             ');
         $statement->execute([
             'token' => $token->getToken(),
-            'idUsuario' => $token->getIdUsuario(),
+            'idUsuario' => $token->getIdPerson(),
             'refreshToken' => $token->getRefreshToken(),
-            'dataExpira' => $token->getDataExpira()
+            'dataExpira' => $token->getDateExpire()
         ]);
         
     }
