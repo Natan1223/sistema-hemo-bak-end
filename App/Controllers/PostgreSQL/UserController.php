@@ -24,10 +24,10 @@ class UserController
             $user
                 ->setIdPerson((int)$data['idPessoa'])
                 ->setLogin((string)$data['login'])
-                ->setPassword(md5($data['senha']))
+                ->setPassword(md5($data['password']))
                 ->setActive((string)$data['ativo']);
             
-            if(strlen($data['senha']) < 8)
+            if(strlen($data['password']) < 8)
                 return $response
                     ->withJson([
                         "menssage" => 'Senha abaixo de 8 caracteres!'
@@ -91,7 +91,7 @@ class UserController
         $userDAO = new UserDAO();
         $user = new UserModel();
 
-        if(strlen($data['senha']) < 8){
+        if(strlen($data['password']) < 8){
             
             $result = [
                 'message' => [
@@ -116,7 +116,7 @@ class UserController
         if($expireDate > $now && $tokenDecoded->login == $data['email']){
             $user
                 ->setLogin($data['email'])
-                ->setPassword(md5($data['senha']));
+                ->setPassword(md5($data['password']));
 
             $userDAO->updatePassword($user);
            
@@ -178,7 +178,7 @@ class UserController
             if($emailRecipient){
 
                 $emailOrigen = 'natanbandeira18@gmail.com';
-                $senha = 'Natan1223#';
+                $password = 'Natan1223#';
                 $nomeProjeto = 'Projeto HEMO';
 
                 $mailer = new PHPMailer();
@@ -190,19 +190,19 @@ class UserController
                 $mailer->SMTPSecure = 'tls';
                 $mailer->SMTPAuth = true; //Define se haverá ou não autenticação no SMTP
                 $mailer->Username = $emailOrigen; //Informe o e-mai o completo
-                $mailer->Password = $senha; //Senha da caixa postal
+                $mailer->Password = $password; //Senha da caixa postal
                 $mailer->FromName = $nomeProjeto; //Nome que será exibido para o destinatário
                 $mailer->From = $emailOrigen; //Obrigatório ser a mesma caixa postal indicada em "username"
                 $mailer->AddAddress($emailRecipient); //Destinatários
-                $mailer->Subject = 'Recuperação de senha '.$nomeProjeto.' - '.date("d/m/Y");
+                $mailer->Subject = 'Recuperação de password '.$nomeProjeto.' - '.date("d/m/Y");
                 $mailer->Body = '
                                 <h2>Sistema HEMO</h2>
                                 <b>Orientação ao usuario:</b><br>
-                                <p><font color="red">Sua senha de acesso é <b>pessoal</b> e <b>intransferivel</b>. Caso seja anotada, mantenha em local seguro.<br>
+                                <p><font color="red">Sua password de acesso é <b>pessoal</b> e <b>intransferivel</b>. Caso seja anotada, mantenha em local seguro.<br>
                                 Obs: Encerre a sessão efetuando logoff sempre que se afastar da maquina (Computador).</font><p>
-                                Para validar seu acesso e alterar sua senha clique no link a seguir: <br>
+                                Para validar seu acesso e alterar sua password clique no link a seguir: <br>
                                 <a href="">
-                                http://usuario-senha.com.br</a><br><br>
+                                http://usuario-password.com.br</a><br><br>
                                 
                                 <p>
                                 Para mais informaçoes entre em contato com LABTEC UEA<br>

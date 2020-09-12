@@ -32,12 +32,6 @@ $app->get('/apresentacao-hemo', function ($request, $response, $args) {
         ]);
 });
 
-$app->get('/user', UserController::class . ':listUsers');//ok
-$app->post('/usuario', UserController::class . ':cadastrarUsuario');
-
-$app->get('/user-email/[{id}]', UserController::class . ':queryUserRest');//ok
-$app->put('/user-password', UserController::class . ':updatePassword');
-
 $app->group('',function() use ($app){
 
     #lista todas as pessoas cadastradas
@@ -47,8 +41,11 @@ $app->group('',function() use ($app){
     #atualizar dados de uma pessoa
     $app->put('/pessoa', PessoaController::class . ':atualizarDadosPessoa');
 
-    
-    
+    $app->get('/user', UserController::class . ':listUsers');//ok
+    $app->post('/usuario', UserController::class . ':cadastrarUsuario');
+
+    $app->get('/user-email/[{id}]', UserController::class . ':queryUserRest');//ok
+    $app->put('/user-password', UserController::class . ':updatePassword');
 
     $app->get('/cidades', CidadeController::class . ':listarCidades');
     $app->post('/cidade', CidadeController::class . ':cadastrarCidade');
@@ -67,7 +64,7 @@ $app->group('',function() use ($app){
 ->add(
     function($request, $response, $next){
         $token = $request->getAttribute("jwt");
-        $expireDate = date_format(new \DateTime($token['data_expira']), 'Y-m-d H:i:s');
+        $expireDate = date_format(new \DateTime($token['dateExpire']), 'Y-m-d H:i:s');
         $now = new \DateTime();
         $now = date_format($now, 'Y-m-d H:i:s');
         if($expireDate < $now)

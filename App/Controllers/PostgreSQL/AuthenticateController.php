@@ -17,7 +17,7 @@ final class AuthenticateController
         $data = $request->getParsedBody();
 
         $login = $data['login'];
-        $password = md5($data['senha']);
+        $password = md5($data['password']);
 
         $userDAO = new UserDAO();
         $user = $userDAO->userLogin($login);
@@ -44,12 +44,12 @@ final class AuthenticateController
                             ->withStatus(401);
         }
 
-        $data_expeira = (new \DateTime())->modify('+5 hour')->format('Y-m-d H:i:s');
+        $dateExpire = (new \DateTime())->modify('+5 hour')->format('Y-m-d H:i:s');
 
         $tokenCarrega = [
             'sub' => $user->getIdPerson(),
             'login' => $user->getLogin(),
-            'data_expira' => $data_expeira
+            'dateExpire' => $dateExpire
         ];
 
         $token = JWT::encode($tokenCarrega,getenv('JWT_SECRET_KEY'));
@@ -64,7 +64,7 @@ final class AuthenticateController
         $tokenModel
             ->setToken($token)
             ->setRefreshToken($refreshToken)
-            ->setDataExpira($data_expeira)
+            ->setDataExpira($dateExpire)
             ->setIdUsuario($user->getIdPerson());
 
         $tokenDAO = new TokenDAO();
