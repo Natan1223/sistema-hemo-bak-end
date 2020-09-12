@@ -2,7 +2,7 @@
 
 namespace App\DAO\PostgreSQL;
 
-abstract class Conexao
+abstract class Connection
 {
     /**
      * @var \PDO

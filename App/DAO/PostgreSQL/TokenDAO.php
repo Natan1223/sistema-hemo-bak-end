@@ -2,10 +2,10 @@
 
 namespace App\DAO\PostgreSQL;
 
-use App\DAO\PostgreSQL\Conexao;
+use App\DAO\PostgreSQL\Connection;
 use App\Models\PostgreSQL\TokenModel;
 
-final class TokenDAO extends Conexao
+final class TokenDAO extends Connection
 {
     public function __construct()
     {

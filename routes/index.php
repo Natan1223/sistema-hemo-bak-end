@@ -2,10 +2,10 @@
 
 use function src\slimConfiguration;
 
+use App\Controllers\PostgreSQL\AuthenticateController;
 use App\Controllers\PostgreSQL\PessoaController;
-use App\Controllers\PostgreSQL\AutenticaController;
-use App\Controllers\PostgreSQL\UsuarioController;
 use App\Controllers\PostgreSQL\CidadeController;
+use App\Controllers\PostgreSQL\UserController;
 use Tuupola\Middleware\JwtAuthentication;
 
 $app = new \Slim\App(slimConfiguration());
@@ -19,9 +19,9 @@ $app->add(function ($req, $res, $next) {
             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 });
 
-$app->post('/login', AutenticaController::class . ':login');
+$app->post('/login', AuthenticateController::class . ':login');
 
-$app->get('/usuario-senha/[{id}]', UsuarioController::class . ':consultaUsuarioRest');
+$app->get('/user-password/[{id}]', UserController::class . ':queryUserRest');
 
 $app->get('/apresentacao-hemo', function ($request, $response, $args) {
     return $response
@@ -32,7 +32,11 @@ $app->get('/apresentacao-hemo', function ($request, $response, $args) {
         ]);
 });
 
-$app->get('/usuarios', UsuarioController::class . ':listarUsuarios');
+$app->get('/user', UserController::class . ':listUsers');//ok
+$app->post('/usuario', UserController::class . ':cadastrarUsuario');
+
+$app->get('/user-email/[{id}]', UserController::class . ':queryUserRest');//ok
+$app->put('/user-password', UserController::class . ':updatePassword');
 
 $app->group('',function() use ($app){
 
@@ -43,11 +47,8 @@ $app->group('',function() use ($app){
     #atualizar dados de uma pessoa
     $app->put('/pessoa', PessoaController::class . ':atualizarDadosPessoa');
 
-   
-    $app->post('/usuario', UsuarioController::class . ':cadastrarUsuario');
-
-    $app->put('/usuario-senha', UsuarioController::class . ':atualizarSenha');
-    $app->get('/usuario-email/[{id}]', UsuarioController::class . ':consultaUsuarioRest');
+    
+    
 
     $app->get('/cidades', CidadeController::class . ':listarCidades');
     $app->post('/cidade', CidadeController::class . ':cadastrarCidade');
