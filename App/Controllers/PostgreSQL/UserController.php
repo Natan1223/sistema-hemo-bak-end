@@ -27,32 +27,62 @@ class UserController
                 ->setPassword(md5($data['password']))
                 ->setActive((string)$data['ativo']);
             
-            if(strlen($data['password']) < 8)
-                return $response
-                    ->withJson([
-                        "menssage" => 'Senha abaixo de 8 caracteres!'
-                    ])
-                    ->withStatus(401);
+            if(strlen($data['password']) < 8){
+                $result = [
+                    'message' => [
+                        'pt' => 'Senha abaixo de 8 caracteres.',
+                        'en' => 'Password below 8 characters.'
+                    ],
+                    'result' => null
+                ]; 
+                $response = $response->withjson($result);
 
-            $idUser = $userDAO->registerUser($user); 
+                return $response->withStatus(401);
+            }
+
+            if(strlen($data['login']) == 0){
+                $result = [
+                    'message' => [
+                        'pt' => 'Login invalido.',
+                        'en' => 'Invalid login.'
+                    ],
+                    'result' => null
+                ]; 
+                $response = $response->withjson($result);
+
+                return $response->withStatus(401);
+            }
+                    
+            $idUser = $userDAO->registerUser($user);  
             
             if($idUser){
-                $response = $response->withjson([
-                    "message" => "Usuario cadastrado com sucesso..."
-                ]);
+                $result = [
+                    'message' => [
+                        'pt' => 'Usuário cadastrado com sucesso.',
+                        'en' => 'User successfully registered.'
+                    ],
+                    'result' => null
+                ]; 
+                $response = $response->withjson($result);
             }else {
-                $response = $response
-                ->withStatus(406)
-                ->withjson([
-                    "message" => "Erro ao cadastrar usuário..."
-                ]);
+                $result = [
+                    'message' => [
+                        'pt' => 'Erro ao cadastrar usuário.',
+                        'en' => 'Error registering user.'
+                    ],
+                    'result' => null
+                ]; 
+                $response = $response->withjson($result)->withStatus(406);
             }
         }else{
-            $response = $response
-            ->withStatus(406)
-            ->withjson([
-                "message" => "Parametros não aceitaveis..."
-            ]);
+            $result = [
+                'message' => [
+                    'pt' => 'Parametros não aceitaveis.',
+                    'en' => 'Parameters are not acceptable.'
+                ],
+                'result' => null
+            ]; 
+            $response = $response->withjson($result)->withStatus(406);
         }
     
         return $response;

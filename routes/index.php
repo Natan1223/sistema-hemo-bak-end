@@ -3,8 +3,8 @@
 use function src\slimConfiguration;
 
 use App\Controllers\PostgreSQL\AuthenticateController;
-use App\Controllers\PostgreSQL\PessoaController;
 use App\Controllers\PostgreSQL\CityController;
+use App\Controllers\PostgreSQL\PersonController;
 use App\Controllers\PostgreSQL\UserController;
 use Tuupola\Middleware\JwtAuthentication;
 
@@ -34,15 +34,12 @@ $app->get('/apresentacao-hemo', function ($request, $response, $args) {
 
 $app->group('',function() use ($app){
 
-    #lista todas as pessoas cadastradas
-    $app->get('/pessoa', PessoaController::class . ':listarPessoas');
-    #cadastra uma pessoa
-    $app->post('/pessoa', PessoaController::class . ':cadastrarPessoa');
-    #atualizar dados de uma pessoa
-    $app->put('/pessoa', PessoaController::class . ':atualizarDadosPessoa');
+    $app->get('/person', PersonController::class . ':listPersons');
+    $app->post('/person', PersonController::class . ':registerPerson');
+    $app->put('/person', PersonController::class . ':updatePersonData');
 
     $app->get('/user', UserController::class . ':listUsers');//ok
-    $app->post('/usuario', UserController::class . ':cadastrarUsuario');
+    $app->post('/user', UserController::class . ':registerUser');
 
     $app->get('/user-email/[{id}]', UserController::class . ':queryUserRest');//ok
     $app->put('/user-password', UserController::class . ':updatePassword');
