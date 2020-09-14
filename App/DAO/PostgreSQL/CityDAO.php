@@ -2,17 +2,17 @@
 
 namespace App\DAO\PostgreSQL;
 
-use App\DAO\PostgreSQL\Conexao;
-use App\Models\PostgreSQL\CidadeModel;
+use App\DAO\PostgreSQL\Connection;
+use App\Models\PostgreSQL\CityModel;
 
-final class CidadeDAO extends Conexao
+final class CityDAO extends Connection
 {
     public function __construct()
     {
         parent::__construct(); 
     }
 
-    public function cadastrarCidade(CidadeModel $cidade)
+    public function registerCity(CityModel $city)
     {
             $statement = $this->pdo
                 ->prepare(' INSERT INTO 
@@ -23,16 +23,16 @@ final class CidadeDAO extends Conexao
                             );
                 ');
             $statement->execute([
-                'descricao'=>$cidade->getDescricao()
+                'descricao'=>$city->getDescription()
             ]);
 
-            $idCidade =  $this->pdo->lastInsertId();
+            $idCity =  $this->pdo->lastInsertId();
             
-            return $idCidade;
+            return $idCity;
  
     }
 
-    public function listarCidades(): array
+    public function listCities(): array
     {
         $statement = $this->pdo
             ->prepare(' SELECT 
@@ -46,7 +46,7 @@ final class CidadeDAO extends Conexao
         return $response;
     }
 
-    public function atualizarDadosCidade(CidadeModel $cidade): void
+    public function updateDataCity(CityModel $city): void
     {
         $statement = $this->pdo
             ->prepare(' UPDATE administracao.cidade SET
@@ -57,8 +57,8 @@ final class CidadeDAO extends Conexao
         ;');
 
         $statement->execute([
-            'idcidade' => $cidade->getIdCidade(),
-            'descricao' => $cidade->getDescricao(),
+            'idcidade' => $city->getIdCity(),
+            'descricao' => $city->getDescription(),
         ]);
         return;
     }

@@ -4,7 +4,7 @@ use function src\slimConfiguration;
 
 use App\Controllers\PostgreSQL\AuthenticateController;
 use App\Controllers\PostgreSQL\PessoaController;
-use App\Controllers\PostgreSQL\CidadeController;
+use App\Controllers\PostgreSQL\CityController;
 use App\Controllers\PostgreSQL\UserController;
 use Tuupola\Middleware\JwtAuthentication;
 
@@ -47,9 +47,9 @@ $app->group('',function() use ($app){
     $app->get('/user-email/[{id}]', UserController::class . ':queryUserRest');//ok
     $app->put('/user-password', UserController::class . ':updatePassword');
 
-    $app->get('/cidades', CidadeController::class . ':listarCidades');
-    $app->post('/cidade', CidadeController::class . ':cadastrarCidade');
-    $app->put('/cidade', CidadeController::class . ':atualizarDadosCidade');
+    $app->get('/cities', CityController::class . ':listCities');
+    $app->post('/city', CityController::class . ':registerCity');
+    $app->put('/city', CityController::class . ':updateDataCity');
 
     $app->get('/nome-rota-exemplo/[{id}]', NomeExemploClassController::class . ':nomeMetodoDaClass');
     $app->post('/nome-rota-exemplo', NomeExemploClassController::class . ':nomeMetodoDaClass');
