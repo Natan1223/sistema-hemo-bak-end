@@ -39,18 +39,17 @@ final class CityDAO extends Connection
                             idcidade,
                             descricao
                         FROM administracao.cidade
-                        ORDER BY idcidade,descricao
+                        ORDER BY idcidade
             ');
         $statement->execute();
         $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
         return $response;
     }
 
-    public function updateDataCity(CityModel $city): void
+    public function updateCityData(CityModel $city): void
     {
         $statement = $this->pdo
             ->prepare(' UPDATE administracao.cidade SET
-                            idcidade = :idcidade,
                             descricao = :descricao
                         WHERE
                             idcidade = :idcidade
