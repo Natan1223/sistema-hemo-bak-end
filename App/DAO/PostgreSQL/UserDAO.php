@@ -15,6 +15,25 @@ final class UserDAO extends Connection
     public function registerUser(UserModel $user)
     {
         $statement = $this->pdo
+            ->prepare(' SELECT
+                            *
+                        FROM administracao.pessoa, administracao.usuario
+                        WHERE
+                            :idpessoa = administracao.usuario.idpessoa OR 
+                            :login = administracao.usuario.login
+
+            ');
+        $statement->execute([
+            'idpessoa'=>$user->getIdPerson(),
+            'login'=>$user->getLogin()
+        ]);
+        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        //Se não existe uma pessoa cadastrada com esse ID, então não é possivel cadastrar um usuario
+        if(count($response)>0){
+            return null;
+        }
+
+        $statement = $this->pdo
             ->prepare(' INSERT INTO 
                         administracao.usuario (
                             idpessoa, 
@@ -38,7 +57,6 @@ final class UserDAO extends Connection
         $idUser =  $this->pdo->lastInsertId();
         
         return $idUser;
- 
     }
 
     public function listUsers(): array
@@ -46,6 +64,7 @@ final class UserDAO extends Connection
         $statement = $this->pdo
             ->prepare(' SELECT 
                             idusuario,
+                            idpessoa,
                             login,
                             ativo
                         FROM administracao.usuario

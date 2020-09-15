@@ -26,7 +26,27 @@ final class PersonDAO extends Connection
     }
 
     public function registerPerson(PersonModel $person): array
-    {
+    {   
+        $statement = $this->pdo
+            ->prepare(' SELECT 
+                            *
+                        FROM administracao.pessoa
+                        WHERE
+                            :cpf = cpf
+                            OR
+                            :email = email
+                        ;');
+        $statement->execute([
+            'cpf' => $person->getCpf(),
+            'email' => $person->getEmail()
+        ]);
+
+        $result = $statement->fetchAll(\PDO::FETCH_ASSOC);    
+        //Existe uma pessoa cadastrada com o CPF
+        if ($result){
+            return array();
+        }
+        //Não existe uma pessoa com este CPF, então pode continuar com o cadastro
         $statement = $this->pdo
             ->prepare('INSERT INTO administracao.pessoa (
                 naturalidade,
@@ -62,13 +82,13 @@ final class PersonDAO extends Connection
             'telefone1' => $person->getPhone1(),
             'telefone2' => $person->getPhone2()
         ]);
-        $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
-
+        $result = $statement->fetchAll(\PDO::FETCH_ASSOC);        
         return $result;
     }
 
-    public function updatePersonData(PersonModel $person): void
+    public function updatePersonData(PersonModel $person): array
     {
+        
         $statement = $this->pdo
             ->prepare(' UPDATE administracao.pessoa SET
                             naturalidade = :naturalidade,
@@ -97,6 +117,6 @@ final class PersonDAO extends Connection
         ]);
         $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        return;
+        return $result;
     }
 }
