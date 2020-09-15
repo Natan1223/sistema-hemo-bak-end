@@ -16,6 +16,24 @@ class PersonController
 
         $personDAO = new PersonDAO();
         $person = new PersonModel();
+        if(
+        strlen($data['cpf']) != 11 || 
+        strlen($data['nome']) == 0 || 
+        strlen($data['dataNascimento']) == 0 || 
+        strlen($data['sexo']) != 1 || 
+        !filter_var($data['email'], FILTER_VALIDATE_EMAIL)
+        ){
+            $result = [
+                'message' => [
+                    'pt' => 'Existem informações invalidas.',
+                    'en' => 'There is invalid information.'
+                ],
+                'result' => null
+            ]; 
+            $response = $response->withjson($result);
+
+            return $response->withStatus(401);
+        }
 
         if($data){
             $person
@@ -30,7 +48,7 @@ class PersonController
             ->setPhone2 ($data['telefone2']);
 
             $idPerson = $personDAO->registerPerson($person); 
-            
+
             if($idPerson){
                 $result = [
                     'message' => [
@@ -90,7 +108,25 @@ class PersonController
 
         $personDAO = new PersonDAO();
         $person = new PersonModel();
-        
+        if(
+            strlen($data['cpf']) != 11 || 
+            strlen($data['nome']) == 0 || 
+            strlen($data['dataNascimento']) == 0 || 
+            strlen($data['sexo']) != 1 || 
+            !filter_var($data['email'], FILTER_VALIDATE_EMAIL)
+            ){
+                $result = [
+                    'message' => [
+                        'pt' => 'Existem informações invalidas.',
+                        'en' => 'There is invalid information.'
+                    ],
+                    'result' => null
+                ]; 
+                $response = $response->withjson($result);
+    
+                return $response->withStatus(401);
+        }
+
         if($data){
             $person
             ->setNaturalness ($data['naturalidade'])
@@ -103,9 +139,9 @@ class PersonController
             ->setPhone1 ($data['telefone1'])
             ->setPhone2 ($data['telefone2']);
             
-            $personDAO->updatePersonData($person);
+            $idPerson = $personDAO->updatePersonData($person);
 
-            if($personDAO){
+            if($idPerson){
                 $result = [
                     'message' => [
                         'pt' => 'Pessoa atualizada com sucesso.',
@@ -135,6 +171,7 @@ class PersonController
             ]; 
             $response = $response->withjson($result)->withStatus(406);
         }
+        
         return $response;
     }
 }

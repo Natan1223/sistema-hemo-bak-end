@@ -20,39 +20,39 @@ class UserController
         $userDAO = new UserDAO();
         $user = new UserModel();
 
+        if(strlen($data['password']) < 8){
+            $result = [
+                'message' => [
+                    'pt' => 'Senha abaixo de 8 caracteres.',
+                    'en' => 'Password below 8 characters.'
+                ],
+                'result' => null
+            ]; 
+            $response = $response->withjson($result);
+
+            return $response->withStatus(401);
+        }
+
+        if(strlen($data['login']) == 0 || !filter_var($data['login'], FILTER_VALIDATE_EMAIL)){
+            $result = [
+                'message' => [
+                    'pt' => 'Login invalido.',
+                    'en' => 'Invalid login.'
+                ],
+                'result' => null
+            ]; 
+            $response = $response->withjson($result);
+
+            return $response->withStatus(401);
+        }
+    
         if($data){
             $user
                 ->setIdPerson((int)$data['idPessoa'])
                 ->setLogin((string)$data['login'])
                 ->setPassword(md5($data['password']))
                 ->setActive((string)$data['ativo']);
-            
-            if(strlen($data['password']) < 8){
-                $result = [
-                    'message' => [
-                        'pt' => 'Senha abaixo de 8 caracteres.',
-                        'en' => 'Password below 8 characters.'
-                    ],
-                    'result' => null
-                ]; 
-                $response = $response->withjson($result);
-
-                return $response->withStatus(401);
-            }
-
-            if(strlen($data['login']) == 0){
-                $result = [
-                    'message' => [
-                        'pt' => 'Login invalido.',
-                        'en' => 'Invalid login.'
-                    ],
-                    'result' => null
-                ]; 
-                $response = $response->withjson($result);
-
-                return $response->withStatus(401);
-            }
-                    
+                 
             $idUser = $userDAO->registerUser($user);  
             
             if($idUser){
