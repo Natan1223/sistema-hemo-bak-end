@@ -14,6 +14,20 @@ class CityController
     {
         $data = $request->getParsedBody();
 
+        if ($data['description'] == ""){
+            $response = $response
+            ->withStatus(406)
+            ->withjson([
+                "message" => [
+                    "pt" => "Parametros não aceitaveis...",
+                    "en" => "Unacceptable parameters."
+                ],
+                'result' => null
+            ]);
+
+            return $response;
+        }
+
         $cityDAO = new CityDAO();
         $city = new CityModel();
 
@@ -79,16 +93,16 @@ class CityController
 
     public function updateCityData(Request $request, Response $response, array $args): Response
     {
+        $id = $args['id'];
         $data = $request->getParsedBody();
 
         $cityDAO = new CityDAO();
         $city = new CityModel();
         if($data){
             $city
-            ->setIdCity ($data['idCity'])
             ->setDescription ($data['description']);
             
-        $cityDAO->updateCityData($city);
+        $cityDAO->updateCityData($city, $id);
 
         if($cityDAO){
             $response = $response->withjson([

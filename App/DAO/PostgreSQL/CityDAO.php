@@ -46,17 +46,15 @@ final class CityDAO extends Connection
         return $response;
     }
 
-    public function updateCityData(CityModel $city): void
+    public function updateCityData(CityModel $city, int $id): void
     {
         $statement = $this->pdo
             ->prepare(' UPDATE administracao.cidade SET
                             descricao = :descricao
                         WHERE
-                            idcidade = :idcidade
-        ;');
+                            idcidade = ' . $id);
 
         $statement->execute([
-            'idcidade' => $city->getIdCity(),
             'descricao' => $city->getDescription(),
         ]);
         return;
