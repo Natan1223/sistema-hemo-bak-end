@@ -19,7 +19,7 @@ class CityController
 
         if($data){
             $city
-            ->setDescription((string)$data['description']);
+            ->setDescription ($data['description']);
 
             $idCity = $cityDAO->registerCity($city); 
             
@@ -28,7 +28,8 @@ class CityController
                     "message" => [
                         "pt" => "Cidade cadastrada com sucesso...",
                         "en" => "City register was successful."
-                    ]
+                    ],
+                    'result' => null
                 ]);
             }else {
                 $response = $response
@@ -37,7 +38,8 @@ class CityController
                     "message" => [
                         "pt" => "Erro ao cadastrar cidade...",
                         "en" => "Error registering city."
-                    ]
+                    ],
+                    'result' => null
                 ]);
             }
         }else{
@@ -47,7 +49,8 @@ class CityController
                 "message" => [
                     "pt" => "Parametros não aceitaveis...",
                     "en" => "Unacceptable parameters."
-                ]
+                ],
+                'result' => null
             ]);
         }
     
@@ -58,7 +61,15 @@ class CityController
     {
         $city = new CityDAO();
 
-        $result = $city->listCities();
+        $data = $city->listCities();
+
+        $result = [
+            'message' => [
+                'pt' => null,
+                'en' => null
+            ],
+            'result' => $data
+        ];
 
         $response = $response
             ->withjson($result);
@@ -66,7 +77,7 @@ class CityController
         return $response;
     }
 
-    public function updateDataCity(Request $request, Response $response, array $args): Response
+    public function updateCityData(Request $request, Response $response, array $args): Response
     {
         $data = $request->getParsedBody();
 
@@ -75,16 +86,17 @@ class CityController
         if($data){
             $city
             ->setIdCity ($data['idCity'])
-            ->setDescricao ($data['description']);
+            ->setDescription ($data['description']);
             
-        $cityDAO->updateDataCity($city);
+        $cityDAO->updateCityData($city);
 
         if($cityDAO){
             $response = $response->withjson([
                 "message" => [
                     'pt' => 'Cidade atualizada com sucesso.',
                     'en' => 'City update was successful.'
-                ]
+                ],
+                'result' => null
             ]);
         }else {
             $response = $response
@@ -93,7 +105,8 @@ class CityController
                 "message" => [
                     'pt' => 'Erro ao atualizar cidade.',
                     'en' => 'Error updating city.'
-                ]
+                ],
+                'result' => null
             ]);
         }
     }else{
@@ -103,7 +116,8 @@ class CityController
             "message" => [
                 'pt' => 'Parâmetro não aceitáveis.',
                 'en' => 'Unacceptable parameters.'
-            ]
+            ],
+            'result' => null
         ]);
     }
 

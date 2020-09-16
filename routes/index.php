@@ -46,7 +46,7 @@ $app->group('',function() use ($app){
 
     $app->get('/cities', CityController::class . ':listCities');
     $app->post('/city', CityController::class . ':registerCity');
-    $app->put('/city', CityController::class . ':updateDataCity');
+    $app->put('/city', CityController::class . ':updateCityData');
 
     $app->get('/nome-rota-exemplo/[{id}]', NomeExemploClassController::class . ':nomeMetodoDaClass');
     $app->post('/nome-rota-exemplo', NomeExemploClassController::class . ':nomeMetodoDaClass');
