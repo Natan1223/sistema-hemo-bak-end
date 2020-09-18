@@ -11,7 +11,7 @@ class UserTest extends TestCase
 
     public function setUp(): void
     {
-        $this->http = new Client(['base_uri' => 'http://90.0.3.231:8090/sistema-hemo/index.php/']);
+        $this->http = new Client(['base_uri' => 'http://200.129.161.231:8090/sistema-hemo/index.php/']);
     }
 
     public function testListUsers()
@@ -52,13 +52,12 @@ class UserTest extends TestCase
             'form_params' => $data
         ]);
 
-        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertEquals(200, $response->getStatusCode());
         $contentType = $response->getHeaders()["Content-Type"][0];
         
         $this->assertEquals("application/json", $contentType);
         $decodedResponse = json_decode($response->getBody());
 
         $this->assertEquals($decodedResponse->message->pt,'Usuário cadastrado com sucesso.');
-        
     }
 }

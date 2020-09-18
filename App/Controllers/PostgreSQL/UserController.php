@@ -65,7 +65,7 @@ class UserController
                 ]; 
                 $response = $response
                     ->withjson($result)
-                    ->withStatus(201);
+                    ->withStatus(200);
             }else {
                 $result = [
                     'message' => [
