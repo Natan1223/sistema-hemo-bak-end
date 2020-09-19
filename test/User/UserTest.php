@@ -11,7 +11,8 @@ class UserTest extends TestCase
 
     public function setUp(): void
     {
-        $this->http = new Client(['base_uri' => 'http://90.0.3.231:8090/sistema-hemo/index.php/']);
+        //$this->http = new Client(['base_uri' => 'http://90.0.3.231:8090/sistema-hemo/index.php/']);
+        $this->http = new Client(['base_uri' => 'http://200.129.161.231:8090/sistema-hemo/index.php/']);
     }
 
     public function testListUsers()
@@ -40,7 +41,7 @@ class UserTest extends TestCase
 
         $data = [
             'idPessoa' => 13,
-            'login' => 'teste11sdads1@gmail.com',
+            'login' => 'teste11sdads1php@gmail.com',
             'password' => '122303321',
             'ativo' => 'T'
         ];

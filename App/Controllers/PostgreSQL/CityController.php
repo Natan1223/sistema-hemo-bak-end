@@ -14,16 +14,17 @@ class CityController
     {
         $data = $request->getParsedBody();
 
+        //reject empty strings
         if ($data['description'] == ""){
             $response = $response
-            ->withStatus(406)
-            ->withjson([
-                "message" => [
-                    "pt" => "Parametros não aceitaveis...",
-                    "en" => "Unacceptable parameters."
-                ],
-                'result' => null
-            ]);
+                ->withStatus(406)
+                ->withjson([
+                    "message" => [
+                        "pt" => "Erro ao cadastrar cidade...",
+                        "en" => "Error registering city."
+                    ],
+                    'result' => null
+                ]);
 
             return $response;
         }
@@ -93,9 +94,24 @@ class CityController
 
     public function updateCityData(Request $request, Response $response, array $args): Response
     {
-        $id = $args['id'];
         $data = $request->getParsedBody();
-
+        
+        //reject empty strings
+        if ($data['description'] == ""){
+            $response = $response
+            ->withStatus(406)
+            ->withjson([
+                "message" => [
+                    'pt' => 'Erro ao atualizar cidade.',
+                    'en' => 'Error updating city.'
+                ],
+                'result' => null
+            ]);
+                
+                return $response;
+            }
+                
+        $id = $args['id'];
         $cityDAO = new CityDAO();
         $city = new CityModel();
         if($data){
