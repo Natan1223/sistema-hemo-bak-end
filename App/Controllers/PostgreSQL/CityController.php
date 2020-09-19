@@ -95,6 +95,7 @@ class CityController
     public function updateCityData(Request $request, Response $response, array $args): Response
     {
         $data = $request->getParsedBody();
+        $queryParams = $request->getQueryParams();
         
         //reject empty strings
         if ($data['description'] == ""){
@@ -111,7 +112,8 @@ class CityController
                 return $response;
             }
                 
-        $id = $args['id'];
+        // $id = $args['id'];
+        $id = (int) $queryParams['id'];
         $cityDAO = new CityDAO();
         $city = new CityModel();
         if($data){
