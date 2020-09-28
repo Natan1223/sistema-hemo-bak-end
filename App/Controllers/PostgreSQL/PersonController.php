@@ -57,7 +57,7 @@ class PersonController
                     ],
                     'result' => null
                 ]; 
-                $response = $response->withjson($result);
+                $response = $response->withjson($result)->withStatus(200);
             }else {
                 $result = [
                     'message' => [
