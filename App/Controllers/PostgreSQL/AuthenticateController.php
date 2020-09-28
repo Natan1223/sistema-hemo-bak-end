@@ -70,10 +70,18 @@ final class AuthenticateController
         $tokenDAO = new TokenDAO();
         $tokenDAO->createToken($tokenModel);
 
+        $userCompany = $userDAO->listUserCompany($login);
+
+        foreach($userCompany as $dataUserCompany){
+            $resultUserCompany[] = $dataUserCompany;
+        }
+
         $tokenResult = [
             "token" => $token,
-            "refreshToken" => $refreshToken
+            "refreshToken" => $refreshToken,
+            "companyAccess" => $resultUserCompany
         ];
+        
         $result = [
             'message' => [
                 'pt' => 'Autenticação realizada com sucesso.',

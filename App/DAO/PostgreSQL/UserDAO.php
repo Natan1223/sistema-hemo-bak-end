@@ -143,4 +143,22 @@ final class UserDAO extends Connection
         return $user;
     }
 
+    public function listUserCompany(string $login): array
+    {
+        $statement = $this->pdo
+            ->prepare(" SELECT e.idempresa, e.nome
+                        FROM administracao.usuario u 
+                        join administracao.usuario_empresa ue 
+                            on u.idusuario = ue.idusuario 
+                            and ue.ativo = 'T'
+                        join administracao.empresa e 
+                            on ue.idempresa = e.idempresa 
+                        WHERE u.login = :login
+            ");
+        $statement->bindParam('login', $login);
+        $statement->execute();
+        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $response;
+    }
+
 }

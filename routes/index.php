@@ -32,6 +32,8 @@ $app->get('/apresentacao-hemo', function ($request, $response, $args) {
         ]);
 });
 
+$app->put('/user-password', UserController::class . ':updatePassword');
+
 $app->group('',function() use ($app){
 
     $app->get('/person', PersonController::class . ':listPersons');
@@ -42,7 +44,6 @@ $app->group('',function() use ($app){
     $app->post('/user', UserController::class . ':registerUser');
 
     $app->get('/user-email/[{id}]', UserController::class . ':queryUserRest');//ok
-    $app->put('/user-password', UserController::class . ':updatePassword');
 
     $app->get('/cities', CityController::class . ':listCities');
     $app->post('/city', CityController::class . ':registerCity');
@@ -66,7 +67,7 @@ $app->group('',function() use ($app){
         $now = date_format($now, 'Y-m-d H:i:s');
         if($expireDate < $now)
             return $response->withJson([
-                                "menssage" => 'Token expirou. Favor faça login'
+                                "message" => 'Token expirou. Favor faça login'
                             ])
                             ->withStatus(401);
         $response = $next($request, $response);

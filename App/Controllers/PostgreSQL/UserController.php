@@ -63,7 +63,9 @@ class UserController
                     ],
                     'result' => null
                 ]; 
-                $response = $response->withjson($result);
+                $response = $response
+                    ->withjson($result)
+                    ->withStatus(201);
             }else {
                 $result = [
                     'message' => [
@@ -139,7 +141,7 @@ class UserController
         $token = $data['token'];
         $tokenDecoded = JWT::decode($token, getenv('JWT_SECRET_KEY'), array('HS256'));
 
-        $expireDate = date_format(new \DateTime($tokenDecoded->data_expira), 'Y-m-d H:i:s');
+        $expireDate = date_format(new \DateTime($tokenDecoded->dateExpire), 'Y-m-d H:i:s');
         $now = new \DateTime();
         $now = date_format($now, 'Y-m-d H:i:s');
         
@@ -204,12 +206,24 @@ class UserController
 
             $checks = $userDAO->queryUserRest($email);
             $emailRecipient = $checks[0]['login'];
-           
+            $dataUser = $userDAO->queryUserRest($email);
+            $name = $dataUser[0]['nome'];
+            
             if($emailRecipient){
 
                 $emailOrigen = 'natanbandeira18@gmail.com';
                 $password = 'Natan1223#';
                 $nomeProjeto = 'Projeto HEMO';
+
+                $dateExpire = (new \DateTime())->modify('+5 hour')->format('Y-m-d H:i:s');
+
+                $tokenCarrega = [
+                    'sub' => $emailRecipient,
+                    'login' => $emailRecipient,
+                    'dateExpire' => $dateExpire
+                ];
+
+                $token = JWT::encode($tokenCarrega,getenv('JWT_SECRET_KEY'));
 
                 $mailer = new PHPMailer();
                 $mailer->IsSMTP();
@@ -231,8 +245,7 @@ class UserController
                                 <p><font color="red">Sua password de acesso é <b>pessoal</b> e <b>intransferivel</b>. Caso seja anotada, mantenha em local seguro.<br>
                                 Obs: Encerre a sessão efetuando logoff sempre que se afastar da maquina (Computador).</font><p>
                                 Para validar seu acesso e alterar sua password clique no link a seguir: <br>
-                                <a href="">
-                                http://usuario-password.com.br</a><br><br>
+                                <a href="http://localhost:8080/blood/login?token='.$token.'&name='.$name.'">http://localhost:8080/blood/login?token='.$token.'&name='.$name.'</a><br><br>
                                 
                                 <p>
                                 Para mais informaçoes entre em contato com LABTEC UEA<br>
@@ -263,7 +276,9 @@ class UserController
                             "email" => $emailRecipient
                         ]
                     ];
-                    $response = $response->withjson($result);
+                    $response = $response
+                                    ->withjson($result)
+                                    ->withStatus(401);
                 }
 
             }else{
