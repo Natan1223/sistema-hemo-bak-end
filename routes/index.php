@@ -6,6 +6,8 @@ use App\Controllers\PostgreSQL\AuthenticateController;
 use App\Controllers\PostgreSQL\CityController;
 use App\Controllers\PostgreSQL\PersonController;
 use App\Controllers\PostgreSQL\UserController;
+use App\Controllers\PostgreSQL\ProfileController;
+use App\Controllers\PostgreSQL\MenuController;
 use Tuupola\Middleware\JwtAuthentication;
 
 $app = new \Slim\App(slimConfiguration());
@@ -21,9 +23,7 @@ $app->add(function ($req, $res, $next) {
 
 $app->post('/login', AuthenticateController::class . ':login');
 
-$app->get('/user-password/[{id}]', UserController::class . ':queryUserRest');
-
-$app->get('/apresentacao-hemo', function ($request, $response, $args) {
+$app->get('/blood-version', function ($request, $response, $args) {
     return $response
         ->withStatus(200)
         ->withjson([
@@ -32,26 +32,28 @@ $app->get('/apresentacao-hemo', function ($request, $response, $args) {
         ]);
 });
 
-$app->put('/user-password', UserController::class . ':updatePassword');
-
 $app->group('',function() use ($app){
 
     $app->get('/person', PersonController::class . ':listPersons');
     $app->post('/person', PersonController::class . ':registerPerson');
     $app->put('/person', PersonController::class . ':updatePersonData');
 
-    $app->get('/user', UserController::class . ':listUsers');//ok
+    $app->get('/user', UserController::class . ':listUsers');
     $app->post('/user', UserController::class . ':registerUser');
 
-    $app->get('/user-email/[{id}]', UserController::class . ':queryUserRest');//ok
+    $app->get('/user-email/[{id}]', UserController::class . ':queryUserRest');
 
     $app->get('/cities', CityController::class . ':listCities');
     $app->post('/city', CityController::class . ':registerCity');
     $app->put('/city', CityController::class . ':updateDataCity');
+    
+    $app->get('/profile', ProfileController::class . ':listProfiles');
+    $app->post('/profile', ProfileController::class . ':registerProfile');
+    $app->put('/profile', ProfileController::class . ':updateProfile');
 
-    $app->get('/nome-rota-exemplo/[{id}]', NomeExemploClassController::class . ':nomeMetodoDaClass');
-    $app->post('/nome-rota-exemplo', NomeExemploClassController::class . ':nomeMetodoDaClass');
-    $app->put('/nome-rota-exemplo', NomeExemploClassController::class . ':nomeMetodoDaClass');
+    $app->get('/menu', MenuController::class . ':listMenus');
+
+    $app->get('/usercompanyprofile', UserCompanyProfileController::class . ':listUserCompanyProfile');
 
     $app->get('/verifica-autenticacao', function ($request, $response, $args) {
         return $response
@@ -79,7 +81,7 @@ $app->group('',function() use ($app){
         "secure" => false,
         "secret" => getenv('JWT_SECRET_KEY'),
         "attribute" => "jwt",
-        "relaxed" => ["localhost", "www.nsbhospedagemweb.com"],
+        "relaxed" => ["localhost", "90.0.3.231"],
         "error" => function ($response, $arguments) {
             $data["status"] = "error";
             $data["message"] = $arguments["message"];
