@@ -53,4 +53,30 @@ final class MenuDAO extends Connection
             
         return $idMenu;
     }
+
+    public function updateMenu(MenuModel $menu)
+    {
+        $statement = $this->pdo
+            ->prepare('UPDATE administracao.menu SET
+                descricao = :descricao,
+                ativo = :ativo,
+                path = :path,
+                idmenu_titulo = :idmenu_titulo
+            WHERE
+                idmenu = :idmenu
+            ;
+        ');
+
+        $statement->execute([
+            'idmenu' => $menu->getIdMenu(),
+            'descricao' => $menu->getDescription(),
+            'ativo' => $menu->getActive(),
+            'path' => $menu->getPath(),
+            'idmenu_titulo' => $menu->getIdMenuTitle()
+        ]);
+        
+        $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $result;
+    }
 }
