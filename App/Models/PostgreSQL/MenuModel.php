@@ -50,18 +50,18 @@ class MenuModel
         return $this;
 	}
     
-    public function getIdMenuTitle(): int {
+    public function getIdMenuTitle() {
 		return $this->idMenuTitle;
-    }
-    
+	}
+
 	/**
      * @return self
      */
 
-	public function setIdMenuTitle(int $idMenuTitle): self{
+	public function setIdMenuTitle($idMenuTitle): self {
 		$this->idMenuTitle = $idMenuTitle;
         return $this;
-	}
+    }
 
 	public function getActive(): string {
 		return $this->active;
