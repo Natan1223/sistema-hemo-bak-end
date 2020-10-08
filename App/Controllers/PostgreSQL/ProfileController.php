@@ -168,24 +168,8 @@ class ProfileController
         ->setActive ($data['ativo'])
         ->setIdProfile ($data['idPerfil']);
         
-        $exist = $profileDAO->checkIfProfileExists($profile); 
+        $idProfile = $profileDAO->updateProfile($profile);
 
-        if(!$exist){
-            $idProfile = $profileDAO->updateProfile($profile);
-            
-        }else{
-            $result = [
-                'message' => [
-                    'pt' => 'Existe um perfil com a mesma descrição.',
-                    'en' => 'There is a profile with the same description.'
-                ],
-                'result' => null
-            ];
-            $response = $response->withjson($result);
-            $response->withStatus(500);
-            return $response;
-        }
-        
         if($idProfile){
             $result = [
                 'message' => [
