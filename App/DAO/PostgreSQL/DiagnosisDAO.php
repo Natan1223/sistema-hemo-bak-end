@@ -3,7 +3,7 @@
 namespace App\DAO\PostgreSQL;
 
 use App\DAO\PostgreSQL\Connection;
-use App\Models\PostgreSQL\BedModel;
+use App\Models\PostgreSQL\DiagnosisModel;
 
 final class DiagnosisDAO extends Connection
 {
