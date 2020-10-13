@@ -9,6 +9,7 @@ use App\Controllers\PostgreSQL\PersonController;
 use App\Controllers\PostgreSQL\UserController;
 use App\Controllers\PostgreSQL\ProfileController;
 use App\Controllers\PostgreSQL\MenuController;
+use App\Controllers\PostgreSQL\PatientController;
 use Tuupola\Middleware\JwtAuthentication;
 
 $app = new \Slim\App(slimConfiguration());
@@ -57,6 +58,8 @@ $app->group('',function() use ($app){
     $app->get('/usercompanyprofile', UserCompanyProfileController::class . ':listUserCompanyProfile');
 
     $app->get('/type-attendance', AttendanceController::class . ':listTypeAttendance');
+
+    $app->get('/patient/[{nome}]', PatientController::class . ':listPatient');
 
     $app->get('/verifica-autenticacao', function ($request, $response, $args) {
         return $response
