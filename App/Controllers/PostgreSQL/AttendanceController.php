@@ -28,7 +28,5 @@ class AttendanceController
 
         return $response;
     }
-
-
     
 }
