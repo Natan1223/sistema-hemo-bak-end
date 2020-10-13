@@ -29,9 +29,9 @@ final class AttendanceDAO extends Connection
     {
         $statement = $this->pdo
             ->prepare(" SELECT 
-                            idtipo_atendimento,
+                            idtipo_atendimento as idtipoatendimento,
                             descricao
-                        FROM administracao.tipo_atendimento
+                        FROM prontuario.tipo_atendimento
                         WHERE ativo = 'T'
                         ");
         $statement->execute();

@@ -2,6 +2,7 @@
 
 use function src\slimConfiguration;
 
+use App\Controllers\PostgreSQL\AttendanceController;
 use App\Controllers\PostgreSQL\AuthenticateController;
 use App\Controllers\PostgreSQL\CityController;
 use App\Controllers\PostgreSQL\PersonController;
@@ -54,6 +55,8 @@ $app->group('',function() use ($app){
     $app->get('/menu', MenuController::class . ':listMenus');
 
     $app->get('/usercompanyprofile', UserCompanyProfileController::class . ':listUserCompanyProfile');
+
+    $app->get('/type-attendance', AttendanceController::class . ':listTypeAttendance');
 
     $app->get('/verifica-autenticacao', function ($request, $response, $args) {
         return $response
