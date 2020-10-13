@@ -5,6 +5,7 @@ use function src\slimConfiguration;
 use App\Controllers\PostgreSQL\AttendanceController;
 use App\Controllers\PostgreSQL\AuthenticateController;
 use App\Controllers\PostgreSQL\CityController;
+use App\Controllers\PostgreSQL\HealthInsuranceController;
 use App\Controllers\PostgreSQL\PersonController;
 use App\Controllers\PostgreSQL\UserController;
 use App\Controllers\PostgreSQL\ProfileController;
@@ -60,6 +61,8 @@ $app->group('',function() use ($app){
     $app->get('/type-attendance', AttendanceController::class . ':listTypeAttendance');
 
     $app->get('/patient/[{nome}]', PatientController::class . ':listPatient');
+
+    $app->get('/health-insurance-company', HealthInsuranceController::class . ':listHealthInsuranceCompany');
 
     $app->get('/verifica-autenticacao', function ($request, $response, $args) {
         return $response
