@@ -28,5 +28,49 @@ class AttendanceController
 
         return $response;
     }
+
+    public function registerAttendance(Request $request, Response $response, array $args): Response
+    {
+        $data = $request->getParsedBody();
+
+        $attendanceDAO = new AttendanceDAO();
+        $attendance = new AttendanceModel();
+
+        if($data){
+            $attendance
+                ->setIdCompany($_SESSION['idCompany'])
+                ->setIdPatient($data['idPatient'])
+                ->setIdTypeAttendance($data['idTypeAttendance'])
+                ->setDateAttendance(getenv('DATA_HORA_SISTEMA'));
+
+            $idAttendance = $attendanceDAO->registerAttendance($attendance); 
+            
+            $dataResult = [
+                "idAttendance" => $idAttendance
+            ];
+            
+            $response = $response
+            ->withStatus(406)
+            ->withjson([
+                "message" => [
+                    "pt" => "Atendimento cadastrado com sucesso...",
+                    "en" => "Attendance successfully registered."
+                ],
+                'result' => $dataResult
+            ]);
+         
+        }else{
+            $response = $response
+            ->withStatus(406)
+            ->withjson([
+                "message" => [
+                    "pt" => "Parametros não aceitaveis...",
+                    "en" => "Unacceptable parameters."
+                ],
+                'result' => null
+            ]);
+        }
     
+        return $response;
+    }
 }

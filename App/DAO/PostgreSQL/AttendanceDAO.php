@@ -40,7 +40,32 @@ final class AttendanceDAO extends Connection
         return $result;
     }
 
-    
+    public function registerAttendance(AttendanceModel $attendance)
+    {
+        $statement = $this->pdo
+            ->prepare(' INSERT INTO administracao.atendimento (
+                            idempresa,
+                            idtipo_atendimento,
+                            idpaciente,
+                            data_atendimento
+                        ) VALUES (
+                            :idEmpresa,
+                            :idTipoAtendimento,
+                            :idPaciente,
+                            :dataAtendimento
+                        );
+            ');
+        $statement->execute([
+            'idEmpresa' => $attendance->getIdCompany(),
+            'idTipoAtendimento' => $attendance->getIdTypeAttendance(),
+            'idPaciente' => $attendance->getIdPatient(),
+            'dataAtendimento' => $attendance->getDateAttendance()
+        ]);
 
+        $idAttendance =  $this->pdo->lastInsertId();
+        
+        return $idAttendance;
+ 
+    }
     
 }
