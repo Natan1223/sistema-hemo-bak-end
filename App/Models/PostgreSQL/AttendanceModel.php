@@ -10,6 +10,7 @@ final class AttendanceModel
     private $idTypeAttendance;
     private $dateAttendance;
     private $dateClosing;
+    private $idDiagnosis;
 
 
     /**
@@ -132,4 +133,24 @@ final class AttendanceModel
         return $this;
     }
 
+
+    /**
+     * Get the value of idDiagnosis
+     */ 
+    public function getIdDiagnosis(): int
+    {
+        return $this->idDiagnosis;
+    }
+
+    /**
+     * Set the value of idDiagnosis
+     *
+     * @return  self
+     */ 
+    public function setIdDiagnosis($idDiagnosis): AttendanceModel
+    {
+        $this->idDiagnosis = $idDiagnosis;
+
+        return $this;
+    }
 }

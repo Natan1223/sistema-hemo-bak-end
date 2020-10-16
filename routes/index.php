@@ -60,6 +60,7 @@ $app->group('',function() use ($app){
     $app->get('/usercompanyprofile', UserCompanyProfileController::class . ':listUserCompanyProfile');
 
     $app->get('/type-attendance', AttendanceController::class . ':listTypeAttendance');
+    $app->get('/attendance', AttendanceController::class . ':listAttendance');
     $app->post('/attendance', AttendanceController::class . ':registerAttendance');
 
     $app->get('/patient/[{nome}]', PatientController::class . ':listPatient');
