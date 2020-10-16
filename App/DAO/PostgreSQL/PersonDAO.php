@@ -25,30 +25,6 @@ final class PersonDAO extends Connection
         return $result;
     }
 
-    public function getPersonById(int $id): array
-    {
-        $statement = $this->pdo
-            ->prepare(' SELECT 
-                            idpessoa,
-                            naturalidade,
-                            nome,
-                            datanascimento,
-                            sexo,
-                            cpf,
-                            nomemae,
-                            email,
-                            telefone1,
-                            telefone2
-                        FROM administracao.pessoa
-                        WHERE idpessoa = :id
-                        ORDER BY idpessoa
-            ');
-        $statement->bindValue('id', $id);
-        $statement->execute();
-        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
-        return $response;
-    }
-
     public function registerPerson(PersonModel $person): array
     {   
         $statement = $this->pdo
@@ -142,5 +118,30 @@ final class PersonDAO extends Connection
         $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         return $result;
+    }
+
+    public function getPersonByIdUser(int $idUser)
+    {
+        $statement = $this->pdo
+            ->prepare(' SELECT 
+                            p.idpessoa,
+                            p.naturalidade,
+                            p.nome,
+                            p.datanascimento,
+                            p.sexo,
+                            p.cpf,
+                            p.nomemae,
+                            p.email,
+                            p.telefone1,
+                            p.telefone2
+                        FROM administracao.pessoa p
+                        JOIN administracao.usuario u
+                        ON p.idpessoa = u.idpessoa
+                        AND u.idusuario = :idusuario
+            ');
+        $statement->bindParam('idusuario', $idUser);
+        $statement->execute();
+        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $response;
     }
 }

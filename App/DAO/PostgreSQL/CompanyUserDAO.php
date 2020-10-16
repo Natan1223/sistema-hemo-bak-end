@@ -12,15 +12,17 @@ final class CompanyUserDAO extends Connection
         parent::__construct(); 
     }
 
-    public function listCompanyUser(): array
+    public function listCompanyUserByStatus(string $status): array
     {
         $statement = $this->pdo
             ->prepare(" SELECT 
                             * 
                         FROM administracao.usuario_empresa
-                        WHERE idempresa = 1
+                        WHERE ativo = :ativo
                         ");
-        $statement->execute();
+        $statement->execute([
+            'ativo' => $status
+        ]);
         $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         return $result;
