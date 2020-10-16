@@ -63,11 +63,13 @@ final class UserDAO extends Connection
     {
         $statement = $this->pdo
             ->prepare(' SELECT 
-                            idusuario,
-                            idpessoa,
-                            login,
-                            ativo
-                        FROM administracao.usuario
+                            u.idusuario,
+                            u.idpessoa,
+                            u.login,
+                            u.ativo
+                        FROM administracao.usuario AS u
+                        JOIN administracao.pessoa AS p
+                        ON u.idpessoa = p.idpessoa
                         ORDER BY idusuario,ativo
             ');
         $statement->execute();

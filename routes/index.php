@@ -6,6 +6,12 @@ use App\Controllers\PostgreSQL\AuthenticateController;
 use App\Controllers\PostgreSQL\CityController;
 use App\Controllers\PostgreSQL\PersonController;
 use App\Controllers\PostgreSQL\UserController;
+use App\Controllers\PostgreSQL\ProfessionalCouncilController;
+use App\Controllers\PostgreSQL\ProfessionalController;
+use App\Controllers\PostgreSQL\OccupationController;
+use App\Controllers\PostgreSQL\CompanyController;
+use App\Controllers\PostgreSQL\CompanyUserController;
+use App\Controllers\PostgreSQL\ProfessionalOccupationController;
 use Tuupola\Middleware\JwtAuthentication;
 
 $app = new \Slim\App(slimConfiguration());
@@ -21,9 +27,7 @@ $app->add(function ($req, $res, $next) {
 
 $app->post('/login', AuthenticateController::class . ':login');
 
-$app->get('/user-password/[{id}]', UserController::class . ':queryUserRest');
-
-$app->get('/apresentacao-hemo', function ($request, $response, $args) {
+$app->get('/blood-version', function ($request, $response, $args) {
     return $response
         ->withStatus(200)
         ->withjson([
@@ -32,26 +36,46 @@ $app->get('/apresentacao-hemo', function ($request, $response, $args) {
         ]);
 });
 
-$app->put('/user-password', UserController::class . ':updatePassword');
-
 $app->group('',function() use ($app){
 
     $app->get('/person', PersonController::class . ':listPersons');
     $app->post('/person', PersonController::class . ':registerPerson');
     $app->put('/person', PersonController::class . ':updatePersonData');
 
-    $app->get('/user', UserController::class . ':listUsers');//ok
+    $app->get('/user', UserController::class . ':listUsers');
     $app->post('/user', UserController::class . ':registerUser');
 
-    $app->get('/user-email/[{id}]', UserController::class . ':queryUserRest');//ok
+    $app->get('/user-email/[{id}]', UserController::class . ':queryUserRest');
 
     $app->get('/cities', CityController::class . ':listCities');
     $app->post('/city', CityController::class . ':registerCity');
     $app->put('/city', CityController::class . ':updateDataCity');
 
-    $app->get('/nome-rota-exemplo/[{id}]', NomeExemploClassController::class . ':nomeMetodoDaClass');
-    $app->post('/nome-rota-exemplo', NomeExemploClassController::class . ':nomeMetodoDaClass');
-    $app->put('/nome-rota-exemplo', NomeExemploClassController::class . ':nomeMetodoDaClass');
+    $app->post('/professional-council', ProfessionalCouncilController::class . ':registerProfessionalCouncil');
+    $app->get('/professional-councils', ProfessionalCouncilController::class . ':listCouncils');
+    $app->put('/professional-council', ProfessionalCouncilController::class . ':updateCouncilData');
+
+    $app->post('/professional', ProfessionalController::class . ':registerProfessional');
+    $app->get('/professionals', ProfessionalController::class . ':listProfessionals');
+    $app->get('/professionals-company', ProfessionalController::class . ':listProfessionalsByCompany');
+    $app->put('/professional', ProfessionalController::class . ':updateProfessionalData');
+
+    $app->get('/occupations', OccupationController::class . ':listOccupations');
+    $app->get('/occupation-name', OccupationController::class . ':getOccupationByName');
+    $app->get('/occupation-cbo', OccupationController::class . ':getOccupationByCbo');
+    $app->get('/occupation-id', OccupationController::class . ':getOccupationById');
+
+    $app->post('/company', CompanyController::class . ':registerCompany');
+    $app->get('/companies', CompanyController::class . ':listCompanies');
+    $app->put('/company', CompanyController::class . ':updateCompanyData');
+    
+    $app->get('/companies-users', CompanyUserController::class . ':listCompanyUser');
+    $app->post('/companies-users', CompanyUserController::class . ':registerCompanyUser');
+    //$app->put('/companies-users[{idUsuario,idEmpresa,idPerfil}]', CompanyUserController::class . ':updateCompanyUser');
+
+    $app->get('/professional-occupation/professional', ProfessionalOccupationController::class . ':listByProfessional');
+    $app->get('/professional-occupation/occupation', ProfessionalOccupationController::class . ':listByOccupation');
+    $app->get('/professional-occupation/company', ProfessionalOccupationController::class . ':listByCompany');
 
     $app->get('/verifica-autenticacao', function ($request, $response, $args) {
         return $response
@@ -79,7 +103,7 @@ $app->group('',function() use ($app){
         "secure" => false,
         "secret" => getenv('JWT_SECRET_KEY'),
         "attribute" => "jwt",
-        "relaxed" => ["localhost", "www.nsbhospedagemweb.com"],
+        "relaxed" => ["localhost", "90.0.3.231"],
         "error" => function ($response, $arguments) {
             $data["status"] = "error";
             $data["message"] = $arguments["message"];

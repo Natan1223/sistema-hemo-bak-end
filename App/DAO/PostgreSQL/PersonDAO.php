@@ -25,6 +25,30 @@ final class PersonDAO extends Connection
         return $result;
     }
 
+    public function getPersonById(int $id): array
+    {
+        $statement = $this->pdo
+            ->prepare(' SELECT 
+                            idpessoa,
+                            naturalidade,
+                            nome,
+                            datanascimento,
+                            sexo,
+                            cpf,
+                            nomemae,
+                            email,
+                            telefone1,
+                            telefone2
+                        FROM administracao.pessoa
+                        WHERE idpessoa = :id
+                        ORDER BY idpessoa
+            ');
+        $statement->bindValue('id', $id);
+        $statement->execute();
+        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $response;
+    }
+
     public function registerPerson(PersonModel $person): array
     {   
         $statement = $this->pdo
