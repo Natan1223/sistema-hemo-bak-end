@@ -3,15 +3,24 @@
 use function src\slimConfiguration;
 
 use App\Controllers\PostgreSQL\AuthenticateController;
+
 use App\Controllers\PostgreSQL\CityController;
 use App\Controllers\PostgreSQL\PersonController;
 use App\Controllers\PostgreSQL\UserController;
+
 use App\Controllers\PostgreSQL\ProfessionalCouncilController;
 use App\Controllers\PostgreSQL\ProfessionalController;
 use App\Controllers\PostgreSQL\OccupationController;
 use App\Controllers\PostgreSQL\CompanyController;
 use App\Controllers\PostgreSQL\CompanyUserController;
 use App\Controllers\PostgreSQL\ProfessionalOccupationController;
+
+use App\Controllers\PostgreSQL\AttendanceController;
+use App\Controllers\PostgreSQL\DiagnosisController;
+use App\Controllers\PostgreSQL\HealthInsuranceController;
+use App\Controllers\PostgreSQL\ProfileController;
+use App\Controllers\PostgreSQL\MenuController;
+use App\Controllers\PostgreSQL\PatientController;
 use Tuupola\Middleware\JwtAuthentication;
 
 $app = new \Slim\App(slimConfiguration());
@@ -76,6 +85,26 @@ $app->group('',function() use ($app){
     $app->get('/professional-occupation/professional', ProfessionalOccupationController::class . ':listByProfessional');
     $app->get('/professional-occupation/occupation', ProfessionalOccupationController::class . ':listByOccupation');
     $app->get('/professional-occupation/company', ProfessionalOccupationController::class . ':listByCompany');
+
+
+    $app->get('/profile', ProfileController::class . ':listProfiles');
+    $app->post('/profile', ProfileController::class . ':registerProfile');
+    $app->put('/profile', ProfileController::class . ':updateProfile');
+
+    $app->get('/menu', MenuController::class . ':listMenus');
+
+    $app->get('/usercompanyprofile', UserCompanyProfileController::class . ':listUserCompanyProfile');
+
+    $app->get('/type-attendance', AttendanceController::class . ':listTypeAttendance');
+    $app->get('/attendance', AttendanceController::class . ':listAttendance');
+    $app->post('/attendance', AttendanceController::class . ':registerAttendance');
+
+    $app->get('/patient/[{nome}]', PatientController::class . ':listPatient');
+
+    $app->get('/health-insurance-company', HealthInsuranceController::class . ':listHealthInsuranceCompany');
+
+    $app->get('/diagnosis/[{descricao}]', DiagnosisController::class . ':listVWDiagnosis');
+
 
     $app->get('/verifica-autenticacao', function ($request, $response, $args) {
         return $response
