@@ -3,25 +3,58 @@
 namespace App\Controllers\PostgreSQL;
 
 use App\DAO\PostgreSQL\CompanyUserDAO;
+use App\DAO\PostgreSQL\UserDAO;
+use App\DAO\PostgreSQL\PersonDAO;
+use App\DAO\PostgreSQL\ProfileDAO;
+use App\DAO\PostgreSQL\CompanyDAO;
+
 use App\Models\PostgreSQL\CompanyUserModel;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 class CompanyUserController
 {
-    public function listCompanyUser(Request $request, Response $response, array $args): Response
+    public function listCompanyUserByStatus(Request $request, Response $response, array $args): Response
     {
-        
-        $companyUserDAO = new CompanyUserDAO();
+        $queryParams = $request->getQueryParams();
+        $status = $queryParams["status"];
 
-        $data = $companyUserDAO->listCompanyUser();
+        $companyUserDAO = new CompanyUserDAO();
+        $userDAO = new UserDAO();
+        $personDAO = new PersonDAO();
+        $profileDAO = new ProfileDAO();
+        $companyDAO = new CompanyDAO();
+
+        $companyUser = new CompanyUserModel();
+
+        if($status != 'T' && $status != 'F'){
+            $result = [
+                'message' => [
+                    'pt' => 'Status deve ter valor \'T\' ou \'F\'.',
+                    'en' => 'Status must have a value of \'T\' or \'F\'.'
+                ],
+                'result' => null
+            ];
+            $response = $response->withjson($result);
+            $response->withStatus(406);
+            return $response;
+        }
+        
+        $companiesUsers = $companyUserDAO->listCompanyUserByStatus($status);
+
+        for ($i = 0; $i < count($companiesUsers); $i++) {
+            $companiesUsers[$i]['usuario'] = $userDAO->getUserByIdUser($companiesUsers[$i]['idusuario']);
+            $companiesUsers[$i]['pessoa' ] = $personDAO->getPersonByIdUser($companiesUsers[$i]['idusuario']);
+            $companiesUsers[$i]['empresa'] = $companyDAO->getCompanyByIdCompany($companiesUsers[$i]['idempresa']);
+            $companiesUsers[$i]['perfil' ] = $profileDAO->getProfileByIdProfile($companiesUsers[$i]['idperfil']);
+        }
 
         $result = [
             'message' => [
                 'pt' => null,
                 'en' => null
             ],
-            'result' => $data
+            'result' => $companiesUsers
         ];
 
         $response = $response
@@ -133,34 +166,55 @@ class CompanyUserController
             $response->withStatus(406);
             return $response;
         }
-
         $companyUser
         ->setIdUser($queryParams["idUsuario"])
         ->setIdCompany($queryParams["idEmpresa"])
-        ->setIdProfile($queryParams["idPerfil"])
         ->setActive($data["ativo"]);
 
-        $idCompanyUser = $companyUserDAO->updateCompanyUser($companyUser);
-
-        if($idCompanyUser){
-            $result = [
-                'message' => [
-                    'pt' => 'Atualizado com sucesso.',
-                    'en' => 'Updated registered.'
-                ],
-                'result' => null
-            ]; 
-            $response = $response->withjson($result)->withStatus(200);
-        }else {
-            $result = [
-                'message' => [
-                    'pt' => 'Erro ao atualizar.',
-                    'en' => 'update registering.'
-                ],
-                'result' => null
-            ]; 
-            $response = $response->withjson($result)->withStatus(500);
+        $profiles = $data["perfil"];
+        //check if all profiles exist for this user in this company
+        for ($i = 0; $i < count($profiles); $i++) {
+            $companyUser->setIdProfile($profiles[$i]['idPerfil']);
+            $exists = $companyUserDAO->checkIfCompanyUserExists($companyUser);
+            //if not, then it will be possible to update the information
+            if(!$exists){
+                $result = [
+                    'message' => [
+                        'pt' => 'É possivel que o perfil '.$profiles[$i]['idPerfil'].' ainda não esteja pre-registrado para este usuario nesta empresa',
+                        'en' => 'It is possible that the '.$profiles[$i]['idPerfil'].' profile is not yet pre-registered for this user in this company'
+                    ],
+                    'result' => null
+                ];
+                $response = $response->withjson($result);
+                $response->withStatus(406);
+                return $response;
+            }
         }
+        //if the algorithm is here, then it means that the user has all the profiles sent by the request
+        for ($i = 0; $i < count($profiles); $i++) {
+            $companyUser->setIdProfile($profiles[$i]['idPerfil']);
+            $idCompanyUser = $companyUserDAO->updateCompanyUser($companyUser);
+            //checks if the CompanyUser has been updated
+            if(!$idCompanyUser){
+                $result = [
+                    'message' => [
+                        'pt' => 'Erro ao atualizar.',
+                        'en' => 'update registering.'
+                    ],
+                    'result' => null
+                ]; 
+                $response = $response->withjson($result)->withStatus(500);
+            }
+        }
+        //if the algorithm is here, then everything has been updated successfully
+        $result = [
+            'message' => [
+                'pt' => 'Atualizado com sucesso.',
+                'en' => 'Updated registered.'
+            ],
+            'result' => null
+        ]; 
+        $response = $response->withjson($result)->withStatus(200);
             
         return $response;
     }

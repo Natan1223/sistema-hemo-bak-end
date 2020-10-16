@@ -3,7 +3,6 @@
 namespace App\Controllers\PostgreSQL;
 
 use App\DAO\PostgreSQL\UserDAO;
-use App\DAO\PostgreSQL\PersonDAO;
 use App\Models\PostgreSQL\UserModel;
 use Firebase\JWT\JWT;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -94,15 +93,8 @@ class UserController
     public function listUsers(Request $request, Response $response, array $args): Response
     {
         $user = new UserDAO();
-        $person = new PersonDAO();
 
         $data = $user->listUsers();
-
-        foreach($data as &$dataUser){
-            $_person = $person->getPersonById($dataUser['idpessoa']);
-            
-            $dataUser['pessoa'] = $_person;
-        }
 
         $result = [
             'message' => [
