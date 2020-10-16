@@ -94,18 +94,4 @@ final class ProfileDAO extends Connection
 
         return $result;
     }
-    
-    public function getProfileByIdProfile(int $idProfile)
-    {
-        $statement = $this->pdo
-            ->prepare(' SELECT 
-                            *
-                        FROM administracao.perfil
-                        WHERE idperfil = :idperfil
-            ');
-        $statement->bindParam('idperfil', $idProfile);
-        $statement->execute();
-        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
-        return $response;
-    }
 }

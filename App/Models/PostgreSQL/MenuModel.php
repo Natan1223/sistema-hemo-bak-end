@@ -76,7 +76,7 @@ class MenuModel
         return $this;
 	}
 	
-	public function getPath() {
+	public function getPath(): string {
 		return $this->path;
 	}
 
@@ -84,9 +84,8 @@ class MenuModel
      * @return self
      */
 
-	public function setPath($path): self{
+	public function setPath(string $path): self{
 		$this->path = $path;
         return $this;
-	}
-	
+    }
 }

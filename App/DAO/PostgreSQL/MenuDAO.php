@@ -16,12 +16,7 @@ final class MenuDAO extends Connection
     {
         $statement = $this->pdo
             ->prepare(" SELECT 
-                            idmenu,
-                            idperfil,
-                            descricao,
-                            path,
-                            idmenu_titulo,
-                            ativo
+                            * 
                         FROM administracao.menu
                         ");
         $statement->execute();
@@ -83,23 +78,5 @@ final class MenuDAO extends Connection
         $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         return $result;
-    }
-
-    public function getMenuByIdProfile($idProfile): array
-    {
-        $statement = $this->pdo
-            ->prepare(' SELECT 
-                            *
-                        FROM administracao.menu m
-                        JOIN administracao.perfil p
-                        ON m.idperfil = p.idperfil
-                        AND p.idperfil = :idperfil
-                        ORDER BY m.idperfil
-            ');
-        $statement->execute([
-            'idperfil' => $idProfile
-        ]);
-        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
-        return $response;
     }
 }

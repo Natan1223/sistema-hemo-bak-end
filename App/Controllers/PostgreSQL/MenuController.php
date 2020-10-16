@@ -11,7 +11,6 @@ class MenuController
 {
     public function listMenus(Request $request, Response $response, array $args): Response
     {
-        
         $Menu = new MenuDAO();
 
         $data = $Menu->listMenus();
