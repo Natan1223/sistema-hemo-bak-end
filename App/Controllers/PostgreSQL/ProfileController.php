@@ -14,7 +14,6 @@ class ProfileController
     public function registerProfile(Request $request, Response $response, array $args): Response
     {
         $data = $request->getParsedBody();
-
         $profileDAO = new ProfileDAO();
         $menuDAO = new MenuDAO();
 
@@ -195,16 +194,21 @@ class ProfileController
 
     public function listProfiles(Request $request, Response $response, array $args): Response
     {
-        $profile = new ProfileDAO();
+        $profileDAO = new ProfileDAO();
+        $menuDAO = new MenuDAO();
 
-        $data = $profile->listProfiles();
-
+        $profiles = $profileDAO->listProfiles();
+        
+        for ($i = 0; $i < count($profiles); $i++) {
+            $profiles[$i]['menu'] = $menuDAO->getMenuByIdProfile($profiles[$i]['idperfil']);
+        }
+        
         $result = [
             'message' => [
                 'pt' => null,
                 'en' => null
             ],
-            'result' => $data
+            'result' => $profiles
         ];
 
         $response = $response

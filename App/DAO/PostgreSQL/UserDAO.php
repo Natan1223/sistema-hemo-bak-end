@@ -63,13 +63,11 @@ final class UserDAO extends Connection
     {
         $statement = $this->pdo
             ->prepare(' SELECT 
-                            u.idusuario,
-                            u.idpessoa,
-                            u.login,
-                            u.ativo
-                        FROM administracao.usuario AS u
-                        JOIN administracao.pessoa AS p
-                        ON u.idpessoa = p.idpessoa
+                            idusuario,
+                            idpessoa,
+                            login,
+                            ativo
+                        FROM administracao.usuario
                         ORDER BY idusuario,ativo
             ');
         $statement->execute();
@@ -158,6 +156,24 @@ final class UserDAO extends Connection
                         WHERE u.login = :login
             ");
         $statement->bindParam('login', $login);
+        $statement->execute();
+        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $response;
+    }
+
+    public function getUserByIdUser(int $idUser)
+    {
+        $statement = $this->pdo
+            ->prepare(' SELECT 
+                            idusuario,
+                            idpessoa,
+                            login,
+                            ativo
+                        FROM administracao.usuario
+                        WHERE idusuario = :idusuario
+                        ORDER BY idusuario,ativo
+            ');
+        $statement->bindParam('idusuario', $idUser);
         $statement->execute();
         $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
         return $response;

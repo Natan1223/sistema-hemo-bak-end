@@ -46,4 +46,5 @@ class ProfileModel
 		$this->active = $active;
         return $this;
 	}
+	
 }
