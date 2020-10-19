@@ -24,7 +24,7 @@ final class PatientDAO extends Connection
                             on p.idpessoa = p2.idpessoa
                         join prontuario.prontuario_paciente pp 
                             on p.idpaciente = pp.idpaciente 
-                            and pp.idempresa = :idEmpresa  --alterar para sessão com codigo da empresa do usuario autenticado
+                            and pp.idempresa = :idEmpresa
                         WHERE p2.nome like :nome
                         ");
         $statement->bindValue(':nome', '%'.$nome.'%');
