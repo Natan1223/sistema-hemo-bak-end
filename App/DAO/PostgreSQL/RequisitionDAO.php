@@ -30,10 +30,20 @@ final class RequisitionDAO extends Connection
     {
         $statement = $this->pdo
             ->prepare(' INSERT INTO prontuario.atendimento (
-                            idempresa,
-                            idtipo_atendimento,
-                            idpaciente,
-                            data_atendimento
+                            idprocedimento, 
+                            idusuario, 
+                            idstatus_requisicao, 
+                            idtipo_transfusao, 
+                            idempresa, 
+                            idclinica, 
+                            idleito, 
+                            idprofissional_medico, 
+                            peso, 
+                            paquetas, 
+                            hematoctro, 
+                            hemoglobina, 
+                            observacao, 
+                            data_hora_cadastro
                         ) VALUES (
                             :idEmpresa,
                             :idTipoAtendimento,

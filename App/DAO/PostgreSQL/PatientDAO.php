@@ -24,10 +24,11 @@ final class PatientDAO extends Connection
                             on p.idpessoa = p2.idpessoa
                         join prontuario.prontuario_paciente pp 
                             on p.idpaciente = pp.idpaciente 
-                            and pp.idempresa = 1  --alterar para sessão com codigo da empresa do usuario autenticado
+                            and pp.idempresa = :idEmpresa  --alterar para sessão com codigo da empresa do usuario autenticado
                         WHERE p2.nome like :nome
                         ");
         $statement->bindValue(':nome', '%'.$nome.'%');
+        $statement->bindValue(':idEmpresa', $_SESSION['idEmpresa']);
         $statement->execute();
         $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
 

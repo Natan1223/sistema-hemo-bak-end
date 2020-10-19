@@ -91,6 +91,11 @@ $app->group('',function() use ($app){
 ->add(
     function($request, $response, $next){
         $token = $request->getAttribute("jwt");
+
+        $_SESSION["idUsuario"] = $token['sub'];
+        $_SESSION['idPessoa'] = $token['idPessoa'];
+        $_SESSION['idEmpresa'] = 1;
+
         $expireDate = date_format(new \DateTime($token['dateExpire']), 'Y-m-d H:i:s');
         $now = new \DateTime();
         $now = date_format($now, 'Y-m-d H:i:s');

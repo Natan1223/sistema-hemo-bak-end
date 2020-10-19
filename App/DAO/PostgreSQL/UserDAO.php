@@ -122,6 +122,7 @@ final class UserDAO extends Connection
         $statement = $this->pdo
             ->prepare(' SELECT 
                             u.idusuario,
+                            u.idpessoa,
                             u.login,
                             u.senha
                         FROM administracao.usuario u
@@ -136,7 +137,8 @@ final class UserDAO extends Connection
         
         $user = new UserModel();
         $user
-            ->setIdPerson($users[0]['idusuario'])
+            ->setIdUser($users[0]['idusuario'])
+            ->setIdPerson($users[0]['idpessoa'])
             ->setLogin($users[0]['login'])
             ->setPassword($users[0]['senha']);
 
