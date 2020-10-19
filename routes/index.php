@@ -4,7 +4,9 @@ use function src\slimConfiguration;
 
 use App\Controllers\PostgreSQL\AttendanceController;
 use App\Controllers\PostgreSQL\AuthenticateController;
+use App\Controllers\PostgreSQL\BedController;
 use App\Controllers\PostgreSQL\CityController;
+use App\Controllers\PostgreSQL\ClinicController;
 use App\Controllers\PostgreSQL\DiagnosisController;
 use App\Controllers\PostgreSQL\HealthInsuranceController;
 use App\Controllers\PostgreSQL\PersonController;
@@ -12,6 +14,8 @@ use App\Controllers\PostgreSQL\UserController;
 use App\Controllers\PostgreSQL\ProfileController;
 use App\Controllers\PostgreSQL\MenuController;
 use App\Controllers\PostgreSQL\PatientController;
+use App\Controllers\PostgreSQL\ProcedureController;
+use App\Controllers\PostgreSQL\RequisitionController;
 use Tuupola\Middleware\JwtAuthentication;
 
 $app = new \Slim\App(slimConfiguration());
@@ -62,6 +66,15 @@ $app->group('',function() use ($app){
     $app->get('/type-attendance', AttendanceController::class . ':listTypeAttendance');
     $app->get('/attendance', AttendanceController::class . ':listAttendance');
     $app->post('/attendance', AttendanceController::class . ':registerAttendance');
+
+    $app->get('/type-procedure', ProcedureController::class . ':listTypeProcedure');
+    $app->post('/procedure', ProcedureController::class . ':registerProcedure');
+
+    $app->get('/clinic', ClinicController::class . ':listClinic');
+
+    $app->get('/bed/[{idClinic}]', BedController::class . ':listBedIdClinic');
+    
+    $app->get('/transfusion-modality', RequisitionController::class . ':listTransfusionModality');
 
     $app->get('/patient/[{nome}]', PatientController::class . ':listPatient');
 

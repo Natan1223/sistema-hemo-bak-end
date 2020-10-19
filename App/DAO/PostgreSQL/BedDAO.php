@@ -12,13 +12,18 @@ final class BedDAO extends Connection
         parent::__construct(); 
     }
 
-    public function listBed(): array
+    public function listBedIdClinic(int $idClinic): array
     {
         $statement = $this->pdo
             ->prepare(" SELECT 
-                            * 
-                        FROM administracao.leito
-                        ");
+                            l.idleito,
+                            l.descricao
+                        FROM administracao.leito_clinica lc 
+                        join administracao.leito l
+                            on lc.idleito = l.idleito
+                        where lc.idclinica = :idClinic
+            ");
+        $statement->bindParam(':idClinic', $idClinic);       
         $statement->execute();
         $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
