@@ -48,7 +48,7 @@ class PersonController
             ->setPhone2 ($data['telefone2']);
 
             $idPerson = $personDAO->registerPerson($person); 
-            
+
             if($idPerson){
                 $result = [
                     'message' => [

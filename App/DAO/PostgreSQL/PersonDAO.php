@@ -119,4 +119,29 @@ final class PersonDAO extends Connection
 
         return $result;
     }
+
+    public function getPersonByIdUser(int $idUser)
+    {
+        $statement = $this->pdo
+            ->prepare(' SELECT 
+                            p.idpessoa,
+                            p.naturalidade,
+                            p.nome,
+                            p.datanascimento,
+                            p.sexo,
+                            p.cpf,
+                            p.nomemae,
+                            p.email,
+                            p.telefone1,
+                            p.telefone2
+                        FROM administracao.pessoa p
+                        JOIN administracao.usuario u
+                        ON p.idpessoa = u.idpessoa
+                        AND u.idusuario = :idusuario
+            ');
+        $statement->bindParam('idusuario', $idUser);
+        $statement->execute();
+        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $response;
+    }
 }

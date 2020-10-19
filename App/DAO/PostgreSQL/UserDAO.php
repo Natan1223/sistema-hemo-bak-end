@@ -161,4 +161,22 @@ final class UserDAO extends Connection
         return $response;
     }
 
+    public function getUserByIdUser(int $idUser)
+    {
+        $statement = $this->pdo
+            ->prepare(' SELECT 
+                            idusuario,
+                            idpessoa,
+                            login,
+                            ativo
+                        FROM administracao.usuario
+                        WHERE idusuario = :idusuario
+                        ORDER BY idusuario,ativo
+            ');
+        $statement->bindParam('idusuario', $idUser);
+        $statement->execute();
+        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $response;
+    }
+
 }
