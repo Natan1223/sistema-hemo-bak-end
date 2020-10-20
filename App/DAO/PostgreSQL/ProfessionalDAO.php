@@ -89,6 +89,26 @@ final class ProfessionalDAO extends Connection
         return $response;
     }
 
+    public function getProfessionalById(int $id)
+    {
+        $statement = $this->pdo
+            ->prepare(' SELECT
+                            idprofissional
+                            idpessoa,
+                            idconselho_profissional,
+                            numero_conselho,
+                            matricula,
+                            ativo
+                        FROM administracao.profissional
+                        WHERE idprofissional = :id
+                        ORDER BY idprofissional
+            ');
+        $statement->bindValue('id', $id);
+        $statement->execute();
+        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $response;
+    }
+
     // public function listProfessionalsByCompany(): array
     // {
     //     $statement = $this->pdo

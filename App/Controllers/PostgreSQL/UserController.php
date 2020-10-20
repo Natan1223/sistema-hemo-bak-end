@@ -2,7 +2,21 @@
 
 namespace App\Controllers\PostgreSQL;
 
+use App\DAO\PostgreSQL\Connection;
+
 use App\DAO\PostgreSQL\UserDAO;
+use App\DAO\PostgreSQL\PersonDAO;
+use App\DAO\PostgreSQL\CompanyDAO;
+use App\DAO\PostgreSQL\CompanyUserDAO;
+use App\DAO\PostgreSQL\ProfessionalDAO;
+use App\DAO\PostgreSQL\ProfessionalOccupationDAO;
+
+use App\Models\PostgreSQL\PersonModel;
+use App\Models\PostgreSQL\CompanyModel;
+use App\Models\PostgreSQL\CompanyUserModel;
+use App\Models\PostgreSQL\ProfessionalModel;
+use App\Models\PostgreSQL\ProfessionalOccupationModel;
+
 use App\Models\PostgreSQL\UserModel;
 use Firebase\JWT\JWT;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -10,17 +24,32 @@ use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-class UserController
+class UserController extends Connection
 {
 
-    public function registerUser(Request $request, Response $response, array $args): Response
+    public function registerUserComplete(Request $request, Response $response, array $args): Response
     {
         $data = $request->getParsedBody();
 
         $userDAO = new UserDAO();
         $user = new UserModel();
 
-        if(strlen($data['password']) < 8){
+        $personDAO = new PersonDAO();
+        $person = new PersonModel();
+
+        $companyUserDAO = new CompanyUserDAO();
+        $companyUser = new CompanyUserModel();
+
+        $professionalDAO = new ProfessionalDAO();
+        $professional = new ProfessionalModel();
+
+        $companyDAO = new CompanyDAO();
+        $company = new CompanyModel();
+
+        $professionalOccupationDAO = new ProfessionalOccupationDAO();
+        $professionalOccupation = new ProfessionalOccupationModel();
+
+        if(strlen($data['usuario']['password']) < 8){
             $result = [
                 'message' => [
                     'pt' => 'Senha abaixo de 8 caracteres.',
@@ -33,7 +62,7 @@ class UserController
             return $response->withStatus(401);
         }
 
-        if(strlen($data['login']) == 0 || !filter_var($data['login'], FILTER_VALIDATE_EMAIL)){
+        if(strlen($data['usuario']['login']) == 0 || !filter_var($data['usuario']['login'], FILTER_VALIDATE_EMAIL)){
             $result = [
                 'message' => [
                     'pt' => 'Login invalido.',
@@ -48,12 +77,86 @@ class UserController
     
         if($data){
             $user
-                ->setIdPerson((int)$data['idPessoa'])
-                ->setLogin((string)$data['login'])
-                ->setPassword(md5($data['password']))
-                ->setActive((string)$data['ativo']);
+                ->setLogin((string)$data['usuario']['login'])
+                ->setPassword(md5($data['usuario']['password']))
+                ->setActive((string)'F');
+            $person
+                ->setNaturalness ($data['pessoa']['naturalidade'])
+                ->setName ($data['pessoa']['nome'])
+                ->setBirth ($data['pessoa']['dataNascimento'])
+                ->setGender ($data['pessoa']['sexo'])
+                ->setCpf ($data['pessoa']['cpf'])
+                ->setMotherName ($data['pessoa']['nomeMae'])
+                ->setEmail ($data['pessoa']['email'])
+                ->setPhone1 ($data['pessoa']['telefone1'])
+                ->setPhone2 ($data['pessoa']['telefone2']);
+            $professional
+                ->setIdProfessionalCouncil ($data['profissional']['idconselho_profissional'])
+                ->setCouncilNumber ($data['profissional']['numero_conselho'])
+                ->setRegistry ($data['profissional']['matricula'])
+                ->setActive ((string)'F');
+            $company
+                ->setIdCompany((int)$data['empresa']['idEmpresa']);
+            $professionalOccupation
+                ->setIdOccupation($data['profissional_ocupacao']['idOcupacao']);
                  
-            $idUser = $userDAO->registerUser($user);  
+            $result = [
+                'message' => [
+                    'pt' => 'Erro ao cadastrar usuário.',
+                    'en' => 'Error registering user.'
+                ],
+                'result' => null
+            ]; 
+            $response = $response->withjson($result)->withStatus(406);
+
+            $this->pdo->beginTransaction();
+
+            $idPerson = $personDAO->registerPerson($person);
+    
+            $user->setIdPerson($idPerson);
+    
+            $idUser = $userDAO->registerUser($user);
+            if(!$idUser){
+                $this->pdo->rollBack();
+                var_dump('Erro 2');
+                return $response;
+            }
+    
+            $idCompany = $company->getIdCompany();
+            $companyUser->setIdCompany($idCompany);
+            $companyUser->setIdUser($idUser);
+            $companyUser->setIdProfile(9999);
+            $companyUser->setActive((string)'F');
+    
+            $successCompanyUser = $companyUserDAO->registerCompanyUser($companyUser);
+            if(!$successCompanyUser){
+                var_dump('Erro 3');
+                $this->pdo->rollBack();
+                return $response;
+            }
+    
+            $professional->setIdPerson($idPerson);
+            $idProfessional = $professionalDAO->registerProfessional($professional);
+            if(!$idProfessional){
+                var_dump('Erro 4');
+                $this->pdo->rollBack();
+                return $response;
+            }
+    
+            $professionalOccupation->setIdProfessional($idProfessional);
+            $professionalOccupation->setIdCompany($idCompany);
+            $successProfessionalOccupation = $professionalOccupationDAO->registerProfessionalOccupation($professionalOccupation);
+            if(!$successProfessionalOccupation){
+                var_dump('Erro 5');
+                $this->pdo->rollBack();
+                return $response;
+            }
+    
+            if($successProfessionalOccupation){
+                $this->pdo->commit();
+            }
+        
+            
             
             if($idUser){
                 $result = [
@@ -93,8 +196,42 @@ class UserController
     public function listUsers(Request $request, Response $response, array $args): Response
     {
         $user = new UserDAO();
+        $person = new PersonDAO();
 
         $data = $user->listUsers();
+
+        foreach($data as &$dataUser){
+            $_person = $person->getPersonById($dataUser['idpessoa']);
+            
+            $dataUser['pessoa'] = $_person;
+        }
+
+        $result = [
+            'message' => [
+                'pt' => null,
+                'en' => null
+            ],
+            'result' => $data
+        ];
+
+        $response = $response
+            ->withjson($result);
+
+        return $response;
+    }
+
+    public function getUser(Request $request, Response $response, array $args): Response
+    {
+        $user = new UserDAO();
+        $person = new PersonDAO();
+
+        $data = $user->listUsers();
+
+        foreach($data as &$dataUser){
+            $_person = $person->getPersonById($dataUser['idpessoa']);
+            
+            $dataUser['pessoa'] = $_person;
+        }
 
         $result = [
             'message' => [

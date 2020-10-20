@@ -17,13 +17,11 @@ final class ProfessionalOccupationDAO extends Connection
         $statement = $this->pdo
             ->prepare(' SELECT
                             *
-                        FROM administracao.profissional AS p,
-                            administracao.ocupacao AS o,
-                            administracao.empresa AS e
+                        FROM administracao.profissional_ocupacao
                         WHERE
-                            :idprofissional = p.idprofissional OR 
-                            :idocupacao = o.idocupacao OR
-                            :idempresa = e.idempresa
+                            :idprofissional = idprofissional AND 
+                            :idocupacao = idocupacao AND
+                            :idempresa = idempresa
 
             ');
         $statement->execute([
@@ -49,24 +47,25 @@ final class ProfessionalOccupationDAO extends Connection
                         :idempresa
                     );
         ');
-            $statement->execute([
-                'idprofissional'=>$professionalOccupation->getIdProfessional(),
-                'idocupacao'=>$professionalOccupation->getIdOccupation(),
-                'idempresa'=>$professionalOccupation->getIdCompany()
-            ]);
+        $statement->execute([
+            'idprofissional'=>$professionalOccupation->getIdProfessional(),
+            'idocupacao'=>$professionalOccupation->getIdOccupation(),
+            'idempresa'=>$professionalOccupation->getIdCompany()
+        ]);
 
-
-            
-            return getIdProfessional();
+        $success = $statement->rowCount() === 1;
+        
+        return $success;
  
     }
 
-    public function listByProfessional(): array
+    public function listRegistros(): array
     {
         $statement = $this->pdo
             ->prepare(' SELECT 
                             *
-                        FROM administracao.profissional_ocupacao
+                        FROM administracao.profissional_ocupacao 
+                        
                         ORDER BY idprofissional
             ');
         $statement->execute();
@@ -74,14 +73,41 @@ final class ProfessionalOccupationDAO extends Connection
         return $response;
     }
 
-    public function listByOccupation(): array
+    public function listProfessionalsByCompany(int $id): array
     {
         $statement = $this->pdo
             ->prepare(' SELECT 
-                            *
-                        FROM administracao.ocupacao
-                        ORDER BY idocupacao
+                            po.idprofissional,
+                            po.idocupacao,
+                            po.idempresa
+                        FROM administracao.profissional_ocupacao po
+                        
+                        JOIN administracao.profissional p
+                        ON po.idprofissional = p.idprofissional
+                        AND po.idempresa = :id
+                        ORDER BY po.idempresa
             ');
+        $statement->bindValue('id', $id);
+        $statement->execute();
+        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $response;
+    }
+
+    public function listProfessionalsByOccupation(int $id): array
+    {
+        $statement = $this->pdo
+            ->prepare(' SELECT 
+                            po.idprofissional,
+                            po.idocupacao,
+                            po.idempresa
+                        FROM administracao.profissional_ocupacao po
+                        
+                        JOIN administracao.profissional p
+                        ON po.idprofissional = p.idprofissional
+                        AND po.ocupacao = :id
+                        ORDER BY po.idocupacao
+            ');
+        $statement->bindValue('id', $id);
         $statement->execute();
         $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
         return $response;
@@ -92,7 +118,7 @@ final class ProfessionalOccupationDAO extends Connection
         $statement = $this->pdo
             ->prepare(' SELECT 
                             *
-                        FROM administracao.empresa
+                        FROM administracao.profissional_ocupacao
                         ORDER BY idempresa
             ');
         $statement->execute();

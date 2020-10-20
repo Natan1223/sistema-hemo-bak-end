@@ -2,20 +2,16 @@
 
 use function src\slimConfiguration;
 
-use App\Controllers\PostgreSQL\AttendanceController;
 use App\Controllers\PostgreSQL\AuthenticateController;
-use App\Controllers\PostgreSQL\BedController;
 use App\Controllers\PostgreSQL\CityController;
-use App\Controllers\PostgreSQL\ClinicController;
-use App\Controllers\PostgreSQL\DiagnosisController;
-use App\Controllers\PostgreSQL\HealthInsuranceController;
 use App\Controllers\PostgreSQL\PersonController;
 use App\Controllers\PostgreSQL\UserController;
-use App\Controllers\PostgreSQL\ProfileController;
-use App\Controllers\PostgreSQL\MenuController;
-use App\Controllers\PostgreSQL\PatientController;
-use App\Controllers\PostgreSQL\ProcedureController;
-use App\Controllers\PostgreSQL\RequisitionController;
+use App\Controllers\PostgreSQL\ProfessionalCouncilController;
+use App\Controllers\PostgreSQL\ProfessionalController;
+use App\Controllers\PostgreSQL\OccupationController;
+use App\Controllers\PostgreSQL\CompanyController;
+use App\Controllers\PostgreSQL\CompanyUserController;
+use App\Controllers\PostgreSQL\ProfessionalOccupationController;
 use Tuupola\Middleware\JwtAuthentication;
 
 $app = new \Slim\App(slimConfiguration());
@@ -31,6 +27,8 @@ $app->add(function ($req, $res, $next) {
 
 $app->post('/login', AuthenticateController::class . ':login');
 
+$app->get('/user-password/[{id}]', UserController::class . ':queryUserRest');
+
 $app->get('/blood-version', function ($request, $response, $args) {
     return $response
         ->withStatus(200)
@@ -40,6 +38,8 @@ $app->get('/blood-version', function ($request, $response, $args) {
         ]);
 });
 
+$app->put('/user-password', UserController::class . ':updatePassword');
+
 $app->group('',function() use ($app){
 
     $app->get('/person', PersonController::class . ':listPersons');
@@ -47,40 +47,45 @@ $app->group('',function() use ($app){
     $app->put('/person', PersonController::class . ':updatePersonData');
 
     $app->get('/user', UserController::class . ':listUsers');
-    $app->post('/user', UserController::class . ':registerUser');
+    $app->post('/user', UserController::class . ':registerUserComplete');
 
     $app->get('/user-email/[{id}]', UserController::class . ':queryUserRest');
 
     $app->get('/cities', CityController::class . ':listCities');
     $app->post('/city', CityController::class . ':registerCity');
-    $app->put('/city', CityController::class . ':updateDataCity');
-    
+    $app->put('/city[{id}]', CityController::class . ':updateCityData');
+
+    $app->post('/professional-council', ProfessionalCouncilController::class . ':registerProfessionalCouncil');
+    $app->get('/professional-councils', ProfessionalCouncilController::class . ':listCouncils');
+    $app->put('/professional-council', ProfessionalCouncilController::class . ':updateCouncilData');
+
+    $app->post('/professional', ProfessionalController::class . ':registerProfessional');
+    $app->get('/professionals', ProfessionalController::class . ':listProfessionals');
+    $app->get('/professionals-company', ProfessionalController::class . ':listProfessionalsByCompany');
+    $app->put('/professional', ProfessionalController::class . ':updateProfessionalData');
+
+    $app->get('/occupations', OccupationController::class . ':listOccupations');
+    $app->get('/occupation-name', OccupationController::class . ':getOccupationByName');
+    $app->get('/occupation-cbo', OccupationController::class . ':getOccupationByCbo');
+    $app->get('/occupation-id', OccupationController::class . ':getOccupationById');
+
+    $app->post('/company', CompanyController::class . ':registerCompany');
+    $app->get('/companies', CompanyController::class . ':listCompanies');
+    $app->put('/company', CompanyController::class . ':updateCompanyData');
+
     $app->get('/profile', ProfileController::class . ':listProfiles');
     $app->post('/profile', ProfileController::class . ':registerProfile');
     $app->put('/profile', ProfileController::class . ':updateProfile');
-
-    $app->get('/menu', MenuController::class . ':listMenus');
-
-    $app->get('/usercompanyprofile', UserCompanyProfileController::class . ':listUserCompanyProfile');
-
-    $app->get('/type-attendance', AttendanceController::class . ':listTypeAttendance');
-    $app->get('/attendance', AttendanceController::class . ':listAttendance');
-    $app->post('/attendance', AttendanceController::class . ':registerAttendance');
-
-    $app->get('/type-procedure', ProcedureController::class . ':listTypeProcedure');
-    $app->post('/procedure', ProcedureController::class . ':registerProcedure');
-
-    $app->get('/clinic', ClinicController::class . ':listClinic');
-
-    $app->get('/bed/[{idClinic}]', BedController::class . ':listBedIdClinic');
     
-    $app->get('/transfusion-modality', RequisitionController::class . ':listTransfusionModality');
+    $app->get('/companies-users-by-status[{status}]', CompanyUserController::class . ':listCompanyUserByStatus');
+    $app->post('/companies-users', CompanyUserController::class . ':registerCompanyUser');
+    $app->put('/companies-users[{idUsuario,idEmpresa}]', CompanyUserController::class . ':updateCompanyUser');
 
-    $app->get('/patient/[{nome}]', PatientController::class . ':listPatient');
-
-    $app->get('/health-insurance-company', HealthInsuranceController::class . ':listHealthInsuranceCompany');
-
-    $app->get('/diagnosis/[{descricao}]', DiagnosisController::class . ':listVWDiagnosis');
+    $app->post('/professional-occupation', ProfessionalOccupationController::class . ':registerProfessionalOccupation');
+    $app->get('/professional-occupation', ProfessionalOccupationController::class . ':listRegistros');
+    $app->get('/professional-occupation/professional', ProfessionalOccupationController::class . ':listProfessionalsByCompany');
+    $app->get('/professional-occupation/occupation', ProfessionalOccupationController::class . ':listProfessionalsByOccupation');
+    $app->get('/professional-occupation/company', ProfessionalOccupationController::class . ':listByCompany');
 
     $app->get('/verifica-autenticacao', function ($request, $response, $args) {
         return $response
@@ -91,11 +96,6 @@ $app->group('',function() use ($app){
 ->add(
     function($request, $response, $next){
         $token = $request->getAttribute("jwt");
-
-        $_SESSION["idUsuario"] = $token['sub'];
-        $_SESSION['idPessoa'] = $token['idPessoa'];
-        $_SESSION['idEmpresa'] = 1;
-
         $expireDate = date_format(new \DateTime($token['dateExpire']), 'Y-m-d H:i:s');
         $now = new \DateTime();
         $now = date_format($now, 'Y-m-d H:i:s');

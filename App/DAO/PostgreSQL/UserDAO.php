@@ -5,12 +5,39 @@ namespace App\DAO\PostgreSQL;
 use App\DAO\PostgreSQL\Connection;
 use App\Models\PostgreSQL\UserModel;
 
+use App\DAO\PostgreSQL\PersonDAO;
+//use App\DAO\PostgreSQL\CompanyDAO;
+use App\DAO\PostgreSQL\CompanyUserDAO;
+use App\DAO\PostgreSQL\ProfessionalDAO;
+use App\DAO\PostgreSQL\ProfessionalOccupationDAO;
+
+use App\Models\PostgreSQL\PersonModel;
+use App\Models\PostgreSQL\CompanyModel;
+use App\Models\PostgreSQL\CompanyUserModel;
+use App\Models\PostgreSQL\ProfessionalModel;
+use App\Models\PostgreSQL\ProfessionalOccupationModel;
+
 final class UserDAO extends Connection
 {
     public function __construct()
     {
         parent::__construct(); 
     }
+
+    // public function registerUserComplete(UserModel $user, PersonModel $person, CompanyModel $company, ProfessionalModel $professional, ProfessionalOccupationModel $professionalOccupation)
+    // {
+    //     $personDAO = new PersonDAO();
+    //     $companyUserDAO = new CompanyUserDAO();
+    //     $companyUser = new CompanyUserModel();
+
+    //     $professionalDAO = new ProfessionalDAO();
+    //     $professionalOccupationDAO = new ProfessionalOccupationDAO();
+
+        
+    //     // $idUser =  $this->pdo->lastInsertId();
+        
+    //     return $idUser;
+    // }
 
     public function registerUser(UserModel $user)
     {
@@ -27,9 +54,9 @@ final class UserDAO extends Connection
             'idpessoa'=>$user->getIdPerson(),
             'login'=>$user->getLogin()
         ]);
-        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
-        //Se não existe uma pessoa cadastrada com esse ID, então não é possivel cadastrar um usuario
-        if(count($response)>0){
+
+        $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        if ($result){
             return null;
         }
 
@@ -63,11 +90,13 @@ final class UserDAO extends Connection
     {
         $statement = $this->pdo
             ->prepare(' SELECT 
-                            idusuario,
-                            idpessoa,
-                            login,
-                            ativo
-                        FROM administracao.usuario
+                            u.idusuario,
+                            u.idpessoa,
+                            u.login,
+                            u.ativo
+                        FROM administracao.usuario AS u
+                        JOIN administracao.pessoa AS p
+                        ON u.idpessoa = p.idpessoa
                         ORDER BY idusuario,ativo
             ');
         $statement->execute();
@@ -122,7 +151,6 @@ final class UserDAO extends Connection
         $statement = $this->pdo
             ->prepare(' SELECT 
                             u.idusuario,
-                            u.idpessoa,
                             u.login,
                             u.senha
                         FROM administracao.usuario u
@@ -137,8 +165,7 @@ final class UserDAO extends Connection
         
         $user = new UserModel();
         $user
-            ->setIdUser($users[0]['idusuario'])
-            ->setIdPerson($users[0]['idpessoa'])
+            ->setIdPerson($users[0]['idusuario'])
             ->setLogin($users[0]['login'])
             ->setPassword($users[0]['senha']);
 
@@ -163,7 +190,7 @@ final class UserDAO extends Connection
         return $response;
     }
 
-    public function getUserByIdUser(int $idUser)
+    public function getUserById(int $idUser)
     {
         $statement = $this->pdo
             ->prepare(' SELECT 

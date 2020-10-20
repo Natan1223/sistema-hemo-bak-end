@@ -43,9 +43,9 @@ class CompanyUserController
         $companiesUsers = $companyUserDAO->listCompanyUserByStatus($status);
 
         for ($i = 0; $i < count($companiesUsers); $i++) {
-            $companiesUsers[$i]['usuario'] = $userDAO->getUserByIdUser($companiesUsers[$i]['idusuario']);
-            $companiesUsers[$i]['pessoa' ] = $personDAO->getPersonByIdUser($companiesUsers[$i]['idusuario']);
-            $companiesUsers[$i]['empresa'] = $companyDAO->getCompanyByIdCompany($companiesUsers[$i]['idempresa']);
+            $companiesUsers[$i]['usuario'] = $userDAO->getUserById($companiesUsers[$i]['idusuario']);
+            $companiesUsers[$i]['pessoa' ] = $personDAO->getPersonById($companiesUsers[$i]['idusuario']);
+            $companiesUsers[$i]['empresa'] = $companyDAO->getCompanyById($companiesUsers[$i]['idempresa']);
             $companiesUsers[$i]['perfil' ] = $profileDAO->getProfileByIdProfile($companiesUsers[$i]['idperfil']);
         }
 

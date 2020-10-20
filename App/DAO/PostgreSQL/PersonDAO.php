@@ -25,7 +25,55 @@ final class PersonDAO extends Connection
         return $result;
     }
 
-    public function registerPerson(PersonModel $person): array
+    public function getPersonByCpf(string $cpf): array
+    {
+        $statement = $this->pdo
+            ->prepare(' SELECT 
+                            idpessoa,
+                            naturalidade,
+                            nome,
+                            datanascimento,
+                            sexo,
+                            cpf,
+                            nomemae,
+                            email,
+                            telefone1,
+                            telefone2
+                        FROM administracao.pessoa
+                        WHERE idpessoa = :cpf
+                        ORDER BY idpessoa
+            ');
+        $statement->bindValue('cpf', $cpf);
+        $statement->execute();
+        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $response;
+    }
+
+    public function getPersonById(int $id): array
+    {
+        $statement = $this->pdo
+            ->prepare(' SELECT 
+                            idpessoa,
+                            naturalidade,
+                            nome,
+                            datanascimento,
+                            sexo,
+                            cpf,
+                            nomemae,
+                            email,
+                            telefone1,
+                            telefone2
+                        FROM administracao.pessoa
+                        WHERE idpessoa = :id
+                        ORDER BY idpessoa
+            ');
+        $statement->bindValue('id', $id);
+        $statement->execute();
+        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $response;
+    }
+
+    public function registerPerson(PersonModel $person)
     {   
         $statement = $this->pdo
             ->prepare(' SELECT 
@@ -44,7 +92,7 @@ final class PersonDAO extends Connection
         $result = $statement->fetchAll(\PDO::FETCH_ASSOC);    
         //Existe uma pessoa cadastrada com o CPF
         if ($result){
-            return array();
+            return null;
         }
         //Não existe uma pessoa com este CPF, então pode continuar com o cadastro
         $statement = $this->pdo
@@ -82,8 +130,10 @@ final class PersonDAO extends Connection
             'telefone1' => $person->getPhone1(),
             'telefone2' => $person->getPhone2()
         ]);
-        $result = $statement->fetchAll(\PDO::FETCH_ASSOC);        
-        return $result;
+        //$result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        $idPerson =  $this->pdo->lastInsertId();   
+
+        return $idPerson;
     }
 
     public function updatePersonData(PersonModel $person): array
@@ -118,30 +168,5 @@ final class PersonDAO extends Connection
         $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         return $result;
-    }
-
-    public function getPersonByIdUser(int $idUser)
-    {
-        $statement = $this->pdo
-            ->prepare(' SELECT 
-                            p.idpessoa,
-                            p.naturalidade,
-                            p.nome,
-                            p.datanascimento,
-                            p.sexo,
-                            p.cpf,
-                            p.nomemae,
-                            p.email,
-                            p.telefone1,
-                            p.telefone2
-                        FROM administracao.pessoa p
-                        JOIN administracao.usuario u
-                        ON p.idpessoa = u.idpessoa
-                        AND u.idusuario = :idusuario
-            ');
-        $statement->bindParam('idusuario', $idUser);
-        $statement->execute();
-        $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
-        return $response;
     }
 }

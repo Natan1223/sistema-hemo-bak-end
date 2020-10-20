@@ -62,9 +62,12 @@ final class CompanyDAO extends Connection
                             telefone = :telefone,
                             ativo = :ativo
                         WHERE
-                            idempresa = ' . $id);
+                            idempresa = :id
+                        ');
 
+        $statement->bindValue('id', $id);
         $statement->execute([
+            'id' => $company->getIdCompany(),
             'nome' => $company->getName(),
             'telefone' => $company->getTelephone(),
             'ativo' => $company->getActive()
@@ -72,17 +75,22 @@ final class CompanyDAO extends Connection
         return;
     }
 
-    public function getCompanyByIdCompany(int $idCompany)
+    public function getCompanyById(int $id): array
     {
         $statement = $this->pdo
             ->prepare(' SELECT 
-                            *
+                            idempresa,
+                            nome,
+                            telefone,
+                            ativo
                         FROM administracao.empresa
-                        WHERE idempresa = :idempresa
+                        WHERE idempresa = :id
+                        ORDER BY idempresa
             ');
-        $statement->bindParam('idempresa', $idCompany);
+        $statement->bindValue('id', $id);
         $statement->execute();
         $response = $statement->fetchAll(\PDO::FETCH_ASSOC);
         return $response;
     }
+
 }
