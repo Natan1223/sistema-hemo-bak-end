@@ -40,6 +40,8 @@ $app->get('/blood-version', function ($request, $response, $args) {
         ]);
 });
 
+$app->get('/user-email/[{id}]', UserController::class . ':queryUserRest');
+
 $app->group('',function() use ($app){
 
     $app->get('/person', PersonController::class . ':listPersons');
@@ -49,7 +51,7 @@ $app->group('',function() use ($app){
     $app->get('/user', UserController::class . ':listUsers');
     $app->post('/user', UserController::class . ':registerUser');
 
-    $app->get('/user-email/[{id}]', UserController::class . ':queryUserRest');
+    
 
     $app->get('/cities', CityController::class . ':listCities');
     $app->post('/city', CityController::class . ':registerCity');
@@ -77,6 +79,8 @@ $app->group('',function() use ($app){
     $app->get('/transfusion-modality', RequisitionController::class . ':listTransfusionModality');
 
     $app->get('/patient/[{nome}]', PatientController::class . ':listPatient');
+
+    $app->post('/requisition', RequisitionController::class . ':registerRequisition');
 
     $app->get('/health-insurance-company', HealthInsuranceController::class . ':listHealthInsuranceCompany');
 

@@ -3,7 +3,7 @@
 namespace App\Controllers\PostgreSQL;
 
 use App\DAO\PostgreSQL\RequisitionDAO;
-use App\Models\PostgreSQL\RequisitioneModel;
+use App\Models\PostgreSQL\RequisitionModel;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -29,47 +29,48 @@ class RequisitionController
         return $response;
     }
 
-    public function registerAttendance(Request $request, Response $response, array $args): Response
+    public function registerRequisition(Request $request, Response $response, array $args): Response
     {
         $data = $request->getParsedBody();
 
-        $attendanceDAO = new AttendanceDAO();
-        $attendance = new AttendanceModel();
+        $requisitionDAO = new RequisitionDAO();
+        $requisition = new RequisitionModel();
 
         if($data){
             
-            $attendance
-                ->setIdCompany($data['idCompany'])
-                ->setIdPatient($data['idPatient'])
-                ->setIdTypeAttendance($data['idTypeAttendance'])
-                ->setDateAttendance(getenv('DATA_HORA_SISTEMA'));
+            $requisition
+                ->setIdProcedure($data['idProcedure'])
+                ->setIdUser($_SESSION['idUsuario'])
+                ->setIdStatusRequisition($data['idStatusRequisition'])
+                ->setIdTypeTransfusion($data['idTypeTransfusion'])
+                ->setIdCompany($_SESSION['idEmpresa'])
+                ->setIdClinic($data['idClinic'])
+                ->setIdBed($data['idBed'])
+                ->setIdProfessionalMedical(2) //alterar para a sessao do profisional
+                ->setWeight($data['weight'])
+                ->setPlatelets($data['platelets'])
+                ->setHematoctro($data['hematoctro'])
+                ->setHemoglobin($data['hemoglobin'])
+                ->setObservation($data['observation'])
+                ->setDateTimeRegister(getenv('DATA_HORA_SISTEMA'));
+               
 
-            $idAttendance = $attendanceDAO->registerAttendance($attendance); 
+            $idRequisition = $requisitionDAO->registerRequisition($requisition); 
             
-            if($idAttendance){
 
-                $attendanceDiagnosis = new AttendanceModel();
-
-                $attendanceDiagnosis
-                    ->setIdDiagnosis($data['idDiagnosis'])
-                    ->setIdAttendance($idAttendance);
-                
-                $attendanceDAO->registerAttendanceDiagnosis($attendanceDiagnosis); 
-
-                $dataResult = [
-                    "idAttendance" => $idAttendance
-                ];
-                
-                $response = $response
-                ->withStatus(200)
-                ->withjson([
-                    "message" => [
-                        "pt" => "Atendimento cadastrado com sucesso...",
-                        "en" => "Attendance successfully registered."
-                    ],
-                    'result' => $dataResult
-                ]);    
-            }
+            $dataResult = [
+                "idRequisition" => $idRequisition
+            ];
+            
+            $response = $response
+            ->withStatus(200)
+            ->withjson([
+                "message" => [
+                    "pt" => "Requisição cadastrada com sucesso...",
+                    "en" => "Requisition successfully registered."
+                ],
+                'result' => $dataResult
+            ]);   
 
         }else{
             $response = $response

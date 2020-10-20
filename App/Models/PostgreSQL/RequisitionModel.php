@@ -10,7 +10,7 @@ final class RequisitionModel
     private $idStatusRequisition;
     private $idTypeTransfusion;
     private $idCompany;
-    private $idBad;
+    private $idBed;
     private $idClinic;
     private $idProfessionalMedical;
     private $weight;
@@ -142,21 +142,21 @@ final class RequisitionModel
     }
 
     /**
-     * Get the value of idBad
+     * Get the value of idBed
      */ 
-    public function getIdBad()
+    public function getIdBed()
     {
-        return $this->idBad;
+        return $this->idBed;
     }
 
     /**
-     * Set the value of idBad
+     * Set the value of idBed
      *
      * @return  self
      */ 
-    public function setIdBad($idBad): RequisitionModel
+    public function setIdBed($idBed): RequisitionModel
     {
-        $this->idBad = $idBad;
+        $this->idBed = $idBed;
 
         return $this;
     }
