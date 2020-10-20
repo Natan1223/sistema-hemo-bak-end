@@ -7,9 +7,12 @@ use App\Models\PostgreSQL\PersonModel;
 
 final class PersonDAO extends Connection
 {
-    public function __construct()
+    public function __construct(\PDO $connection = null)
     {
         parent::__construct(); 
+        if (isset($connection)) {
+            $this->pdo = $connection;
+        }
     }
 
     public function listPersons(): array

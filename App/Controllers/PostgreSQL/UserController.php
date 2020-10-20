@@ -31,22 +31,22 @@ class UserController extends Connection
     {
         $data = $request->getParsedBody();
 
-        $userDAO = new UserDAO();
+        $userDAO = new UserDAO($this->pdo);
         $user = new UserModel();
 
-        $personDAO = new PersonDAO();
+        $personDAO = new PersonDAO($this->pdo);
         $person = new PersonModel();
 
-        $companyUserDAO = new CompanyUserDAO();
+        $companyUserDAO = new CompanyUserDAO($this->pdo);
         $companyUser = new CompanyUserModel();
 
-        $professionalDAO = new ProfessionalDAO();
+        $professionalDAO = new ProfessionalDAO($this->pdo);
         $professional = new ProfessionalModel();
 
-        $companyDAO = new CompanyDAO();
+        $companyDAO = new CompanyDAO($this->pdo);
         $company = new CompanyModel();
 
-        $professionalOccupationDAO = new ProfessionalOccupationDAO();
+        $professionalOccupationDAO = new ProfessionalOccupationDAO($this->pdo);
         $professionalOccupation = new ProfessionalOccupationModel();
 
         if(strlen($data['usuario']['password']) < 8){
@@ -111,14 +111,15 @@ class UserController extends Connection
 
             $this->pdo->beginTransaction();
 
+            // Try to register person
             $idPerson = $personDAO->registerPerson($person);
     
             $user->setIdPerson($idPerson);
     
+            // Try to register user
             $idUser = $userDAO->registerUser($user);
             if(!$idUser){
                 $this->pdo->rollBack();
-                var_dump('Erro 2');
                 return $response;
             }
     
@@ -128,26 +129,27 @@ class UserController extends Connection
             $companyUser->setIdProfile(9999);
             $companyUser->setActive((string)'F');
     
+            // Try to register company user
             $successCompanyUser = $companyUserDAO->registerCompanyUser($companyUser);
             if(!$successCompanyUser){
-                var_dump('Erro 3');
                 $this->pdo->rollBack();
                 return $response;
             }
     
             $professional->setIdPerson($idPerson);
+
+            // Try to register professional
             $idProfessional = $professionalDAO->registerProfessional($professional);
             if(!$idProfessional){
-                var_dump('Erro 4');
                 $this->pdo->rollBack();
                 return $response;
             }
     
             $professionalOccupation->setIdProfessional($idProfessional);
             $professionalOccupation->setIdCompany($idCompany);
+            // Try to register professional occupation
             $successProfessionalOccupation = $professionalOccupationDAO->registerProfessionalOccupation($professionalOccupation);
             if(!$successProfessionalOccupation){
-                var_dump('Erro 5');
                 $this->pdo->rollBack();
                 return $response;
             }

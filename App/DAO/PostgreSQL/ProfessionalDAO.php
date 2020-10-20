@@ -7,9 +7,12 @@ use App\Models\PostgreSQL\ProfessionalModel;
 
 final class ProfessionalDAO extends Connection
 {
-    public function __construct()
+    public function __construct(\PDO $connection = null)
     {
         parent::__construct(); 
+        if (isset($connection)) {
+            $this->pdo = $connection;
+        }
     }
 
     public function registerProfessional(ProfessionalModel $professional)

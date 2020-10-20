@@ -7,9 +7,12 @@ use App\Models\PostgreSQL\CompanyUserModel;
 
 final class CompanyUserDAO extends Connection
 {
-    public function __construct()
+    public function __construct(\PDO $connection = null)
     {
         parent::__construct(); 
+        if (isset($connection)) {
+            $this->pdo = $connection;
+        }
     }
 
     public function listCompanyUserByStatus(string $status): array
@@ -82,6 +85,7 @@ final class CompanyUserDAO extends Connection
         ]);
     
         $success = $statement->rowCount() === 1;
+
         
         return $success;
     }

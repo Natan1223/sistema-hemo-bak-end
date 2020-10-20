@@ -19,10 +19,14 @@ use App\Models\PostgreSQL\ProfessionalOccupationModel;
 
 final class UserDAO extends Connection
 {
-    public function __construct()
+    public function __construct(\PDO $connection = null)
     {
         parent::__construct(); 
+        if (isset($connection)) {
+            $this->pdo = $connection;
+        }
     }
+    
 
     // public function registerUserComplete(UserModel $user, PersonModel $person, CompanyModel $company, ProfessionalModel $professional, ProfessionalOccupationModel $professionalOccupation)
     // {
@@ -82,6 +86,7 @@ final class UserDAO extends Connection
         ]);
 
         $idUser =  $this->pdo->lastInsertId();
+
         
         return $idUser;
     }

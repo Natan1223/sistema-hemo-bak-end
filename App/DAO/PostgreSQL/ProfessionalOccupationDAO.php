@@ -7,9 +7,12 @@ use App\Models\PostgreSQL\ProfessionalOccupationModel;
 
 final class ProfessionalOccupationDAO extends Connection
 {
-    public function __construct()
+    public function __construct(\PDO $connection = null)
     {
         parent::__construct(); 
+        if (isset($connection)) {
+            $this->pdo = $connection;
+        }
     }
 
     public function registerProfessionalOccupation(ProfessionalOccupationModel $professionalOccupation)
@@ -54,6 +57,7 @@ final class ProfessionalOccupationDAO extends Connection
         ]);
 
         $success = $statement->rowCount() === 1;
+
         
         return $success;
  

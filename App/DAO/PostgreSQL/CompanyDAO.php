@@ -7,9 +7,12 @@ use App\Models\PostgreSQL\CompanyModel;
 
 final class CompanyDAO extends Connection
 {
-    public function __construct()
+    public function __construct(\PDO $connection = null)
     {
         parent::__construct(); 
+        if (isset($connection)) {
+            $this->pdo = $connection;
+        }
     }
 
     public function registerCompany(CompanyModel $company)
@@ -33,6 +36,7 @@ final class CompanyDAO extends Connection
             ]);
 
             $idCompany =  $this->pdo->lastInsertId();
+
             
             return $idCompany;
  
