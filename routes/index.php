@@ -41,7 +41,7 @@ $app->get('/blood-version', function ($request, $response, $args) {
 });
 
 $app->get('/user-email/[{id}]', UserController::class . ':queryUserRest');
-$app->get('/type-attendance', AttendanceController::class . ':listTypeAttendance');
+
 $app->group('',function() use ($app){
 
     $app->get('/person', PersonController::class . ':listPersons');
@@ -50,14 +50,12 @@ $app->group('',function() use ($app){
 
     $app->get('/user', UserController::class . ':listUsers');
     $app->post('/user', UserController::class . ':registerUser');
-
-    
+   
 
     $app->get('/cities', CityController::class . ':listCities');
     $app->post('/city', CityController::class . ':registerCity');
     $app->put('/city', CityController::class . ':updateDataCity');
 
-    
     $app->get('/profile-user/[{idEmpresa}]', ProfileController::class . ':listProfilesUser');
     $app->get('/profile', ProfileController::class . ':listProfiles');
     $app->post('/profile', ProfileController::class . ':registerProfile');
@@ -67,7 +65,7 @@ $app->group('',function() use ($app){
 
     $app->get('/usercompanyprofile', UserCompanyProfileController::class . ':listUserCompanyProfile');
 
-   
+    $app->get('/type-attendance', AttendanceController::class . ':listTypeAttendance');
     $app->get('/attendance', AttendanceController::class . ':listAttendance');
     $app->post('/attendance', AttendanceController::class . ':registerAttendance');
 
@@ -101,7 +99,7 @@ $app->group('',function() use ($app){
         $_SESSION["idUsuario"] = $token['sub'];
         $_SESSION['idPessoa'] = $token['idPessoa'];
         $_SESSION['login'] = $token['login'];
-        $_SESSION['idEmpresa'] = 1;
+        $_SESSION['idEmpresa'] = $token['idEmpresa'];
 
         $expireDate = date_format(new \DateTime($token['dateExpire']), 'Y-m-d H:i:s');
         $now = new \DateTime();
@@ -111,6 +109,12 @@ $app->group('',function() use ($app){
                                 "message" => 'Token expirou. Favor faça login'
                             ])
                             ->withStatus(401);
+
+        // if($token['idEmpresa'] == '')
+        //     return $response->withJson([
+        //                     "message" => 'Token invalido.'
+        //                 ])
+        //                 ->withStatus(401);
         $response = $next($request, $response);
         return $response;
     }

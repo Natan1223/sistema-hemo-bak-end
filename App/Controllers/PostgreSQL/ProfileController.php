@@ -202,32 +202,21 @@ class ProfileController
         $profileDAO = new ProfileDAO();
         $menuDAO = new MenuDAO();
 
-        $profilesUser = $profileDAO->listProfilesUser($idEmpresa);
+        $perfilTitulo = $menuDAO->getMenuByIdProfile($idEmpresa);
 
-        foreach($profilesUser as $dataTitulo){
+        foreach($perfilTitulo as $dataTitulo){
 
-            $perfilMenu = $menuDAO->getMenuByIdProfile($dataTitulo['idperfil']);
+            $perfilMenu = $menuDAO->listMenuPath($dataTitulo['idmenu']);
             
             foreach($perfilMenu as $dataPerfil){
 
-                
-                $dataMenu = $menuDAO->listMenuPath($dataPerfil['idmenu']);
-
-                foreach($dataMenu as $dataDescricaoMenu){
-                
-                    $dataPerfil['menu'][] = $dataDescricaoMenu;
-                    
-                }
-                $dataTituloMenu[] = $dataPerfil;
-                $dataTitulo['menuTitulo']= $dataTituloMenu;
-               
+                $dataTitulo['menu'][]= $dataPerfil;
             }
-            $perfilTitulo['perfil'][]= $dataTitulo;
-            
-        }
-        
-        $resultado[]= $perfilTitulo;
 
+            $perfilTitulo = $dataTitulo;
+
+            $resultado['menuPrimario'][] = $perfilTitulo;
+        }
 
         $dateExpire = (new \DateTime('America/Manaus'))->modify('+5 hour')->format('Y-m-d H:i:s');
 
