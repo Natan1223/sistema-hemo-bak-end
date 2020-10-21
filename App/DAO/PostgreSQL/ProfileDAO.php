@@ -50,6 +50,27 @@ final class ProfileDAO extends Connection
         return $result;
     }
 
+    public function listProfilesUser(int $idEmpresa): array
+    {
+        $statement = $this->pdo
+            ->prepare(" SELECT 
+                            p.idperfil,
+                            p.descricao 
+                        FROM administracao.usuario_empresa ue 
+                        join administracao.perfil p 
+                            on ue.idperfil = p.idperfil 
+                        WHERE ue.idusuario = :idUsuario
+                        and ue.idempresa = :idEmpresa
+            ");
+        $statement->execute([
+            'idUsuario' => $_SESSION['idUsuario'],
+            'idEmpresa' => $idEmpresa
+        ]);
+        $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
     public function registerProfile(ProfileModel $profile)
     {
         $statement = $this->pdo

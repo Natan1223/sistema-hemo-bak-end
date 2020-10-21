@@ -41,7 +41,7 @@ $app->get('/blood-version', function ($request, $response, $args) {
 });
 
 $app->get('/user-email/[{id}]', UserController::class . ':queryUserRest');
-
+$app->get('/type-attendance', AttendanceController::class . ':listTypeAttendance');
 $app->group('',function() use ($app){
 
     $app->get('/person', PersonController::class . ':listPersons');
@@ -56,7 +56,9 @@ $app->group('',function() use ($app){
     $app->get('/cities', CityController::class . ':listCities');
     $app->post('/city', CityController::class . ':registerCity');
     $app->put('/city', CityController::class . ':updateDataCity');
+
     
+    $app->get('/profile-user/[{idEmpresa}]', ProfileController::class . ':listProfilesUser');
     $app->get('/profile', ProfileController::class . ':listProfiles');
     $app->post('/profile', ProfileController::class . ':registerProfile');
     $app->put('/profile', ProfileController::class . ':updateProfile');
@@ -65,7 +67,7 @@ $app->group('',function() use ($app){
 
     $app->get('/usercompanyprofile', UserCompanyProfileController::class . ':listUserCompanyProfile');
 
-    $app->get('/type-attendance', AttendanceController::class . ':listTypeAttendance');
+   
     $app->get('/attendance', AttendanceController::class . ':listAttendance');
     $app->post('/attendance', AttendanceController::class . ':registerAttendance');
 
@@ -117,7 +119,7 @@ $app->group('',function() use ($app){
         "secure" => false,
         "secret" => getenv('JWT_SECRET_KEY'),
         "attribute" => "jwt",
-        "relaxed" => ["localhost", "90.0.3.231"],
+        "relaxed" => ["localhost", "blood.labtecs.com.br"],
         "error" => function ($response, $arguments) {
             $data["status"] = "error";
             $data["message"] = $arguments["message"];

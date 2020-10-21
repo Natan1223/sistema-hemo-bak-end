@@ -192,23 +192,46 @@ class ProfileController
         return $response;
     }
 
-    public function listProfiles(Request $request, Response $response, array $args): Response
+    public function listProfilesUser(Request $request, Response $response, array $args): Response
     {
+        $data = $request->getQueryParams();
+        $idEmpresa = $data['idEmpresa'];
+
         $profileDAO = new ProfileDAO();
         $menuDAO = new MenuDAO();
 
-        $profiles = $profileDAO->listProfiles();
+        $profilesUser = $profileDAO->listProfilesUser($idEmpresa);
         
-        for ($i = 0; $i < count($profiles); $i++) {
-            $profiles[$i]['menu'] = $menuDAO->getMenuByIdProfile($profiles[$i]['idperfil']);
+        foreach($profilesUser as $dataTitulo){
+
+            $perfilMenu = $menuDAO->getMenuByIdProfile($dataTitulo['idperfil']);
+            
+            foreach($perfilMenu as $dataPerfil){
+
+                
+                $dataMenu = $menuDAO->listMenuPath($dataPerfil['idmenu']);
+
+                foreach($dataMenu as $dataDescricaoMenu){
+                
+                    $dataPerfil['menu'][] = $dataDescricaoMenu;
+                    
+                }
+                $dataTituloMenu[] = $dataPerfil;
+                $dataTitulo['menuTitulo']= $dataTituloMenu;
+               
+            }
+            $perfilTitulo['perfil'][]= $dataTitulo;
+            
         }
+        
+        $resultado[]= $perfilTitulo;
         
         $result = [
             'message' => [
                 'pt' => null,
                 'en' => null
             ],
-            'result' => $profiles
+            'result' => $resultado
         ];
 
         $response = $response
