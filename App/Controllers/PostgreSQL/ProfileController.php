@@ -9,6 +9,8 @@ use App\Models\PostgreSQL\MenuModel;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
+use Firebase\JWT\JWT;
+
 class ProfileController
 {
     public function registerProfile(Request $request, Response $response, array $args): Response
@@ -201,7 +203,7 @@ class ProfileController
         $menuDAO = new MenuDAO();
 
         $profilesUser = $profileDAO->listProfilesUser($idEmpresa);
-        
+
         foreach($profilesUser as $dataTitulo){
 
             $perfilMenu = $menuDAO->getMenuByIdProfile($dataTitulo['idperfil']);
@@ -225,13 +227,27 @@ class ProfileController
         }
         
         $resultado[]= $perfilTitulo;
+
+
+        $dateExpire = (new \DateTime('America/Manaus'))->modify('+5 hour')->format('Y-m-d H:i:s');
+
+        $tokenCarrega = [
+            'sub' => $_SESSION['idUsuario'],
+            'idPessoa' => $_SESSION['idPessoa'],
+            'login' => $_SESSION['login'],
+            'idEmpresa' => $idEmpresa,
+            'dateExpire' => $dateExpire
+        ];
+
+        $token = JWT::encode($tokenCarrega,getenv('JWT_SECRET_KEY'));    
         
         $result = [
             'message' => [
                 'pt' => null,
                 'en' => null
             ],
-            'result' => $resultado
+            'result' => $resultado,
+            "token" => $token
         ];
 
         $response = $response

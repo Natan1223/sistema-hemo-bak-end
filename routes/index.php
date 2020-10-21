@@ -100,6 +100,7 @@ $app->group('',function() use ($app){
 
         $_SESSION["idUsuario"] = $token['sub'];
         $_SESSION['idPessoa'] = $token['idPessoa'];
+        $_SESSION['login'] = $token['login'];
         $_SESSION['idEmpresa'] = 1;
 
         $expireDate = date_format(new \DateTime($token['dateExpire']), 'Y-m-d H:i:s');

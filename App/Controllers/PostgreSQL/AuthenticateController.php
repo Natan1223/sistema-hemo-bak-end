@@ -44,7 +44,7 @@ final class AuthenticateController
                             ->withStatus(401);
         }
 
-        $dateExpire = (new \DateTime())->modify('+5 hour')->format('Y-m-d H:i:s');
+        $dateExpire = (new \DateTime('America/Manaus'))->modify('+5 hour')->format('Y-m-d H:i:s');
 
         $tokenCarrega = [
             'sub' => $user->getIdUser(),
